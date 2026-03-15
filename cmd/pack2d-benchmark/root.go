@@ -22,6 +22,7 @@ func newRootCmd() *cobra.Command {
 	cmd.AddCommand(newRunCmd(&quiet, &noColor))
 	cmd.AddCommand(newDatasetsCmd(&noColor))
 	cmd.AddCommand(newVersionCmd())
+	cmd.AddCommand(newReportCmd())
 
 	return cmd
 }

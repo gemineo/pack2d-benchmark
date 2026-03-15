@@ -30,6 +30,9 @@ Requires Go 1.26+ and the `pack2d` repository as a sibling directory.
 
 # Export results as JSON
 ./bin/pack2d-benchmark run --export output/results.json
+
+# Generate interactive HTML report from exported JSON
+./bin/pack2d-benchmark report output/results.json -o output/report.html
 ```
 
 ## Commands
@@ -52,6 +55,24 @@ Execute benchmark scenarios against datasets.
 | `--output` | _(stdout)_ | Write ASCII output to file |
 | `--quiet` | `false` | Suppress progress spinner |
 | `--no-color` | `false` | Disable colored output |
+
+### `report`
+
+Generate a self-contained HTML report with interactive charts from a JSON export.
+
+```bash
+# Generate HTML report from benchmark results
+./bin/pack2d-benchmark report output/results.json
+
+# Specify output path
+./bin/pack2d-benchmark report output/results.json -o output/report.html
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--output / -o` | _(input with .html ext)_ | Output HTML file path |
+
+The report includes compression ratio comparison, encode speed vs ratio scatter, level sweep line charts per dataset, dictionary impact (when dict results exist), and QR code feasibility heatmap.
 
 ### `datasets`
 
