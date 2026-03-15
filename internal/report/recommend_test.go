@@ -56,7 +56,7 @@ func TestComputeSummary_SweetSpotFound(t *testing.T) {
 			Algorithm: "zstd",
 			Level:     1,
 			InputType: "raw",
-			Ratio:     1.5,
+			Ratio:     0.80, // fast but weak compression
 			Encode:    runner.TimingStats{Mean: 10 * time.Microsecond},
 		},
 		{
@@ -65,7 +65,7 @@ func TestComputeSummary_SweetSpotFound(t *testing.T) {
 			Algorithm: "zstd",
 			Level:     3,
 			InputType: "raw",
-			Ratio:     3.0, // 100% improvement over 1.5
+			Ratio:     0.40, // big improvement (ratio dropped 50%)
 			Encode:    runner.TimingStats{Mean: 20 * time.Microsecond},
 		},
 	}
@@ -73,7 +73,7 @@ func TestComputeSummary_SweetSpotFound(t *testing.T) {
 	s := ComputeSummary(results)
 	require.Len(t, s.SweetSpot, 1)
 	assert.True(t, s.SweetSpot[0].Found)
-	assert.Equal(t, 3.0, s.SweetSpot[0].Ratio)
+	assert.Equal(t, 0.40, s.SweetSpot[0].Ratio)
 }
 
 func TestComputeSummary_NoSweetSpotThresholdNotMet(t *testing.T) {
@@ -86,7 +86,7 @@ func TestComputeSummary_NoSweetSpotThresholdNotMet(t *testing.T) {
 			Algorithm: "zstd",
 			Level:     1,
 			InputType: "raw",
-			Ratio:     2.0,
+			Ratio:     0.50,
 			Encode:    runner.TimingStats{Mean: 10 * time.Microsecond},
 		},
 		{
@@ -95,7 +95,7 @@ func TestComputeSummary_NoSweetSpotThresholdNotMet(t *testing.T) {
 			Algorithm: "zstd",
 			Level:     9,
 			InputType: "raw",
-			Ratio:     2.001, // negligible improvement
+			Ratio:     0.499, // negligible improvement
 			Encode:    runner.TimingStats{Mean: 10000 * time.Microsecond},
 		},
 	}
@@ -143,7 +143,7 @@ func TestComputeSummary_BestRatioAndSpeed(t *testing.T) {
 			Algorithm: "zlib",
 			Level:     1,
 			InputType: "raw",
-			Ratio:     1.5,
+			Ratio:     0.70, // weak compression but fast
 			Encode:    runner.TimingStats{Mean: 5 * time.Microsecond},
 		},
 		{
@@ -152,7 +152,7 @@ func TestComputeSummary_BestRatioAndSpeed(t *testing.T) {
 			Algorithm: "brotli",
 			Level:     11,
 			InputType: "raw",
-			Ratio:     4.0,
+			Ratio:     0.25, // strong compression but slow
 			Encode:    runner.TimingStats{Mean: 500 * time.Microsecond},
 		},
 	}
@@ -160,8 +160,8 @@ func TestComputeSummary_BestRatioAndSpeed(t *testing.T) {
 	s := ComputeSummary(results)
 
 	require.Len(t, s.BestRatio, 1)
-	assert.Equal(t, "brotli", s.BestRatio[0].Algorithm)
-	assert.Equal(t, 4.0, s.BestRatio[0].Ratio)
+	assert.Equal(t, "brotli", s.BestRatio[0].Algorithm) // lowest ratio = best compression
+	assert.Equal(t, 0.25, s.BestRatio[0].Ratio)
 
 	require.Len(t, s.BestSpeed, 1)
 	assert.Equal(t, "zlib", s.BestSpeed[0].Algorithm)

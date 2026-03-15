@@ -46,7 +46,7 @@ type HeatmapCell struct {
 	Version int
 }
 
-// CompressionRatioByDataset returns the best compression ratio per algorithm per dataset.
+// CompressionRatioByDataset returns the best (lowest) compression ratio per algorithm per dataset.
 func CompressionRatioByDataset(results []runner.Result) RatioBarData {
 	type key struct {
 		dataset string
@@ -64,7 +64,7 @@ func CompressionRatioByDataset(results []runner.Result) RatioBarData {
 		k := key{r.Dataset, string(r.Algorithm)}
 		datasetSet[r.Dataset] = struct{}{}
 		algoSet[string(r.Algorithm)] = struct{}{}
-		if r.Ratio > best[k] {
+		if prev, ok := best[k]; !ok || r.Ratio < prev {
 			best[k] = r.Ratio
 		}
 	}
@@ -158,6 +158,7 @@ func LevelSweep(results []runner.Result, dataset string) []LevelSweepSeries {
 }
 
 // DictImpact returns side-by-side ratio pairs for zstd with and without dictionary.
+// It picks the single best (lowest ratio) config per dataset across all levels and input types.
 func DictImpact(results []runner.Result) []DictPair {
 	type key struct {
 		dataset   string
@@ -180,21 +181,17 @@ func DictImpact(results []runner.Result) []DictPair {
 		}
 	}
 
-	// Only include entries where both exist — pick the best level per dataset.
-	type dsKey struct {
-		dataset   string
-		inputType string
-	}
-	bestPair := map[dsKey]DictPair{}
+	// Only include entries where both exist — pick the best level per dataset
+	// across all input types.
+	bestPair := map[string]DictPair{} // dataset → best pair
 
 	for k, nd := range noDict {
 		wd, ok := withDict[k]
 		if !ok {
 			continue
 		}
-		dk := dsKey{k.dataset, k.inputType}
-		if existing, exists := bestPair[dk]; !exists || wd > existing.RatioDict {
-			bestPair[dk] = DictPair{
+		if existing, exists := bestPair[k.dataset]; !exists || wd < existing.RatioDict {
+			bestPair[k.dataset] = DictPair{
 				Dataset:     k.dataset,
 				Level:       k.level,
 				InputType:   k.inputType,
@@ -209,10 +206,7 @@ func DictImpact(results []runner.Result) []DictPair {
 		pairs = append(pairs, p)
 	}
 	sort.Slice(pairs, func(i, j int) bool {
-		if pairs[i].Dataset != pairs[j].Dataset {
-			return pairs[i].Dataset < pairs[j].Dataset
-		}
-		return pairs[i].InputType < pairs[j].InputType
+		return pairs[i].Dataset < pairs[j].Dataset
 	})
 
 	return pairs
@@ -324,6 +318,52 @@ func DataMatrixHeatmap(results []runner.Result) (datasets []string, cells []Heat
 	}
 
 	return datasets, cells
+}
+
+// SerializationBarData holds best compression ratio per input type per dataset.
+type SerializationBarData struct {
+	Datasets    []string
+	ByInputType map[string][]float64 // inputType → best ratio per dataset (same order as Datasets)
+}
+
+// SerializationImpact returns the best (lowest) compression ratio per input type per dataset,
+// showing how serialization format affects compression. Dictionary results are excluded
+// for clarity.
+func SerializationImpact(results []runner.Result) SerializationBarData {
+	type key struct {
+		dataset   string
+		inputType string
+	}
+
+	best := map[key]float64{}
+	datasetSet := map[string]struct{}{}
+	inputTypeSet := map[string]struct{}{}
+
+	for _, r := range results {
+		if r.Scenario != "compression" || r.UseDict {
+			continue
+		}
+		k := key{r.Dataset, string(r.InputType)}
+		datasetSet[r.Dataset] = struct{}{}
+		inputTypeSet[string(r.InputType)] = struct{}{}
+		if prev, ok := best[k]; !ok || r.Ratio < prev {
+			best[k] = r.Ratio
+		}
+	}
+
+	datasets := sortedKeys(datasetSet)
+	inputTypes := sortedKeys(inputTypeSet)
+
+	byInputType := make(map[string][]float64, len(inputTypes))
+	for _, it := range inputTypes {
+		ratios := make([]float64, len(datasets))
+		for i, ds := range datasets {
+			ratios[i] = best[key{ds, it}]
+		}
+		byInputType[it] = ratios
+	}
+
+	return SerializationBarData{Datasets: datasets, ByInputType: byInputType}
 }
 
 // Datasets returns the unique sorted dataset names from results.

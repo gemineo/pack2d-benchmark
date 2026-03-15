@@ -26,10 +26,10 @@ func ComputeSummary(results []runner.Result) *Summary {
 			continue
 		}
 
-		// Best ratio.
+		// Best ratio (lowest = most compression).
 		bestRatio := dResults[0]
 		for _, r := range dResults[1:] {
-			if r.Ratio > bestRatio.Ratio {
+			if r.Ratio < bestRatio.Ratio {
 				bestRatio = r
 			}
 		}
@@ -78,8 +78,9 @@ func ComputeSummary(results []runner.Result) *Summary {
 			if sorted[i-1].Ratio == 0 {
 				continue
 			}
-			ratioDelta := sorted[i].Ratio - sorted[i-1].Ratio
-			marginal := (ratioDelta / sorted[i-1].Ratio * 100) / float64(timeDelta)
+			// Ratio = compressed/original, so improvement = ratio going down.
+			ratioDrop := sorted[i-1].Ratio - sorted[i].Ratio
+			marginal := (ratioDrop / sorted[i-1].Ratio * 100) / float64(timeDelta)
 			if marginal > 0.05 {
 				sweetIdx = i
 				sweetFound = true

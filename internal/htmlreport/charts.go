@@ -13,6 +13,25 @@ var algoColors = map[string]string{
 	"brotli": "#fac858",
 }
 
+// breakEvenMarkLine returns series opts that draw a horizontal red dashed line at ratio=1.
+func breakEvenMarkLine() []charts.SeriesOpts {
+	return []charts.SeriesOpts{
+		charts.WithMarkLineNameYAxisItemOpts(opts.MarkLineNameYAxisItem{
+			Name:  "ratio = 1",
+			YAxis: 1.0,
+		}),
+		charts.WithMarkLineStyleOpts(opts.MarkLineStyle{
+			Symbol: []string{"none", "none"},
+			Label:  &opts.Label{Show: opts.Bool(true), Formatter: "break-even"},
+			LineStyle: &opts.LineStyle{
+				Color: "#e74c3c",
+				Type:  "dashed",
+				Width: 2,
+			},
+		}),
+	}
+}
+
 // gridWithPadding returns a grid option with enough top margin for title+legend.
 func gridWithPadding() charts.GlobalOpts {
 	return charts.WithGridOpts(opts.Grid{
@@ -28,7 +47,7 @@ func compressionRatioChart(data RatioBarData) *charts.Bar {
 	bar.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title:    "Best Compression Ratio by Dataset",
-			Subtitle: "Higher ratio = better compression",
+			Subtitle: "Lower is better",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
@@ -43,17 +62,67 @@ func compressionRatioChart(data RatioBarData) *charts.Bar {
 	bar.SetXAxis(data.Datasets)
 
 	// Deterministic order.
-	for _, algo := range sortedKeys(toSet(keys(data.ByAlgo))) {
+	algos := sortedKeys(toSet(keys(data.ByAlgo)))
+	for i, algo := range algos {
 		ratios := data.ByAlgo[algo]
 		items := make([]opts.BarData, len(ratios))
-		for i, r := range ratios {
-			items[i] = opts.BarData{Value: fmt.Sprintf("%.2f", r)}
+		for j, r := range ratios {
+			items[j] = opts.BarData{Value: fmt.Sprintf("%.2f", r)}
 		}
 		barOpts := []charts.SeriesOpts{}
 		if c, ok := algoColors[algo]; ok {
 			barOpts = append(barOpts, charts.WithItemStyleOpts(opts.ItemStyle{Color: c}))
 		}
+		if i == 0 {
+			barOpts = append(barOpts, breakEvenMarkLine()...)
+		}
 		bar.AddSeries(algo, items, barOpts...)
+	}
+
+	return bar
+}
+
+var inputTypeColors = map[string]string{
+	"raw":  "#73c0de",
+	"json": "#ee6666",
+	"cbor": "#9a60b4",
+}
+
+func serializationImpactChart(data SerializationBarData) *charts.Bar {
+	bar := charts.NewBar()
+	bar.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title:    "Serialization Impact on Compression",
+			Subtitle: "Lower is better · CBOR converts JSON→binary before compression",
+
+		}),
+		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
+		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
+		charts.WithXAxisOpts(opts.XAxis{Name: "Dataset"}),
+		charts.WithYAxisOpts(opts.YAxis{Name: "Ratio"}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Width:  "1100px",
+			Height: "450px",
+		}),
+		gridWithPadding(),
+	)
+	bar.SetXAxis(data.Datasets)
+
+	inputTypes := sortedKeys(toSet(keys(data.ByInputType)))
+	for i, it := range inputTypes {
+		ratios := data.ByInputType[it]
+		items := make([]opts.BarData, len(ratios))
+		for j, r := range ratios {
+			items[j] = opts.BarData{Value: fmt.Sprintf("%.2f", r)}
+		}
+		barOpts := []charts.SeriesOpts{}
+		if c, ok := inputTypeColors[it]; ok {
+			barOpts = append(barOpts, charts.WithItemStyleOpts(opts.ItemStyle{Color: c}))
+		}
+		if i == 0 {
+			barOpts = append(barOpts, breakEvenMarkLine()...)
+		}
+		bar.AddSeries(it, items, barOpts...)
 	}
 
 	return bar
@@ -64,7 +133,7 @@ func speedVsRatioChart(points []ScatterPoint) *charts.Scatter {
 	scatter.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title:    "Encode Speed vs Compression Ratio",
-			Subtitle: "Bottom-right is ideal: fast encode + high ratio",
+			Subtitle: "Bottom-left is ideal: fast encode + small output",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{
 			Show:    opts.Bool(true),
@@ -106,7 +175,7 @@ func levelSweepChart(dataset string, series []LevelSweepSeries) *charts.Line {
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title:    fmt.Sprintf("Level Sweep — %s", dataset),
-			Subtitle: "Higher ratio = better compression",
+			Subtitle: "Lower is better",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true), Trigger: "axis"}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
@@ -133,7 +202,7 @@ func levelSweepChart(dataset string, series []LevelSweepSeries) *charts.Line {
 	}
 	line.SetXAxis(xLabels)
 
-	for _, s := range series {
+	for idx, s := range series {
 		// Build a lookup for this series' levels.
 		ratioByLevel := map[int]float64{}
 		for i, l := range s.Levels {
@@ -155,6 +224,9 @@ func levelSweepChart(dataset string, series []LevelSweepSeries) *charts.Line {
 		if c, ok := algoColors[s.Algorithm]; ok {
 			lineOpts = append(lineOpts, charts.WithItemStyleOpts(opts.ItemStyle{Color: c}))
 		}
+		if idx == 0 {
+			lineOpts = append(lineOpts, breakEvenMarkLine()...)
+		}
 		line.AddSeries(s.Algorithm, items, lineOpts...)
 	}
 
@@ -166,7 +238,7 @@ func dictImpactChart(pairs []DictPair) *charts.Bar {
 	bar.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title:    "Dictionary Impact (zstd)",
-			Subtitle: "Higher ratio = better compression",
+			Subtitle: "Lower is better",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
@@ -184,13 +256,14 @@ func dictImpactChart(pairs []DictPair) *charts.Bar {
 	dictItems := make([]opts.BarData, len(pairs))
 
 	for i, p := range pairs {
-		labels[i] = fmt.Sprintf("%s (%s)", p.Dataset, p.InputType)
+		labels[i] = p.Dataset
 		noDictItems[i] = opts.BarData{Value: fmt.Sprintf("%.2f", p.RatioNoDict)}
 		dictItems[i] = opts.BarData{Value: fmt.Sprintf("%.2f", p.RatioDict)}
 	}
 
 	bar.SetXAxis(labels)
-	bar.AddSeries("Without Dict", noDictItems, charts.WithItemStyleOpts(opts.ItemStyle{Color: "#5470c6"}))
+	noDictOpts := append(breakEvenMarkLine(), charts.WithItemStyleOpts(opts.ItemStyle{Color: "#5470c6"}))
+	bar.AddSeries("Without Dict", noDictItems, noDictOpts...)
 	bar.AddSeries("With Dict", dictItems, charts.WithItemStyleOpts(opts.ItemStyle{Color: "#91cc75"}))
 
 	return bar

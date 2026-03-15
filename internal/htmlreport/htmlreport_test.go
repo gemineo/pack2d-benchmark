@@ -51,6 +51,19 @@ func TestGenerate_ContainsExpectedElements(t *testing.T) {
 				Ratio:       2.0,
 				Encode:      runner.TimingStats{Mean: 200 * time.Microsecond},
 			},
+			{
+				Scenario:    "compression",
+				Dataset:     "test-ds",
+				DatasetSize: 1000,
+				Algorithm:   pack2d.Zstd,
+				Level:       3,
+				InputType:   pack2d.CBOR,
+				InputBytes:  1000,
+				Compressed:  350,
+				Encoded:     450,
+				Ratio:       2.86,
+				Encode:      runner.TimingStats{Mean: 110 * time.Microsecond},
+			},
 		},
 		Summary: &report.Summary{
 			BestRatio: []report.BestEntry{
@@ -93,12 +106,12 @@ func TestGenerate_ContainsExpectedElements(t *testing.T) {
 	// Summary section.
 	assert.True(t, strings.Contains(html, "test-ds"), "should contain dataset name")
 	assert.True(t, strings.Contains(html, "zstd L3"), "should contain sweet spot config")
-	assert.True(t, strings.Contains(html, "Use zstd level 3"), "should contain recommendation")
 	assert.True(t, strings.Contains(html, "Best Compression Ratio"), "should contain best ratio heading")
 	assert.True(t, strings.Contains(html, "Sweet Spot"), "should contain sweet spot heading")
 
 	// Charts (go-echarts renders these as divs with echarts init).
 	assert.True(t, strings.Contains(html, "echarts"), "should contain echarts reference")
+	assert.True(t, strings.Contains(html, "Serialization Impact"), "should contain serialization impact chart")
 
 	// Valid HTML structure.
 	assert.True(t, strings.Contains(html, "<!DOCTYPE html>"), "should be valid HTML")

@@ -49,7 +49,7 @@ func DefaultConfig() *Config {
 		Scenarios:  []string{"compression", "barcode"},
 		Algorithms: []pack2d.CompressionType{pack2d.Zlib, pack2d.Zstd, pack2d.Brotli},
 		Levels:     DefaultLevels,
-		InputTypes: []pack2d.InputType{pack2d.Raw, pack2d.JSON},
+		InputTypes: []pack2d.InputType{pack2d.Raw, pack2d.JSON, pack2d.CBOR},
 		Iterations: 20,
 		WarmUp:     3,
 	}

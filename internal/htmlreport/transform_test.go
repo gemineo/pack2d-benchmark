@@ -51,10 +51,10 @@ func TestCompressionRatioByDataset(t *testing.T) {
 	data := CompressionRatioByDataset(results)
 
 	assert.Equal(t, []string{"large", "small"}, data.Datasets)
-	assert.InDelta(t, 3.0, data.ByAlgo["zstd"][1], 0.001) // small: best is 3.0
-	assert.InDelta(t, 4.0, data.ByAlgo["zstd"][0], 0.001) // large: 4.0
-	assert.InDelta(t, 2.5, data.ByAlgo["zlib"][1], 0.001) // small: 2.5
-	assert.InDelta(t, 3.5, data.ByAlgo["zlib"][0], 0.001) // large: 3.5
+	assert.InDelta(t, 2.0, data.ByAlgo["zstd"][1], 0.001) // small: best (lowest) is 2.0
+	assert.InDelta(t, 4.0, data.ByAlgo["zstd"][0], 0.001) // large: 4.0 (only entry)
+	assert.InDelta(t, 2.5, data.ByAlgo["zlib"][1], 0.001) // small: 2.5 (only entry)
+	assert.InDelta(t, 3.5, data.ByAlgo["zlib"][0], 0.001) // large: 3.5 (only entry)
 }
 
 func TestCompressionRatioByDataset_IgnoresBarcode(t *testing.T) {
@@ -150,21 +150,23 @@ func TestLevelSweep_Empty(t *testing.T) {
 
 func TestDictImpact(t *testing.T) {
 	results := []runner.Result{
-		makeResult("ds1", "zstd", 3, "raw", 2.0, 20, false),
-		makeResult("ds1", "zstd", 3, "raw", 3.0, 25, true),
-		makeResult("ds1", "zstd", 9, "raw", 2.5, 50, false),
-		makeResult("ds1", "zstd", 9, "raw", 3.5, 55, true),
+		makeResult("ds1", "zstd", 3, "raw", 0.50, 20, false),
+		makeResult("ds1", "zstd", 3, "raw", 0.40, 25, true),
+		makeResult("ds1", "zstd", 9, "raw", 0.45, 50, false),
+		makeResult("ds1", "zstd", 9, "raw", 0.35, 55, true),
+		makeResult("ds1", "zstd", 3, "cbor", 0.42, 22, false),
+		makeResult("ds1", "zstd", 3, "cbor", 0.30, 27, true), // best dict ratio across all input types
 		// zlib results should be ignored.
-		makeResult("ds1", "zlib", 6, "raw", 2.0, 30, false),
+		makeResult("ds1", "zlib", 6, "raw", 0.50, 30, false),
 	}
 
 	pairs := DictImpact(results)
 
-	require.Len(t, pairs, 1)
+	require.Len(t, pairs, 1) // one pair per dataset
 	assert.Equal(t, "ds1", pairs[0].Dataset)
-	assert.Equal(t, 9, pairs[0].Level)                          // best dict ratio
-	assert.InDelta(t, 2.5, pairs[0].RatioNoDict, 0.001)
-	assert.InDelta(t, 3.5, pairs[0].RatioDict, 0.001)
+	assert.Equal(t, "cbor", pairs[0].InputType)                 // best (lowest) dict ratio was cbor
+	assert.InDelta(t, 0.42, pairs[0].RatioNoDict, 0.001)
+	assert.InDelta(t, 0.30, pairs[0].RatioDict, 0.001)
 }
 
 func TestDictImpact_NoDict(t *testing.T) {
@@ -303,6 +305,41 @@ func TestBarcodeHeatmap_AcceptsQRCodeType(t *testing.T) {
 	assert.Equal(t, []string{"L"}, ecLevels)
 	require.Len(t, cells, 1)
 	assert.True(t, cells[0].Fits)
+}
+
+func TestSerializationImpact(t *testing.T) {
+	results := []runner.Result{
+		makeResult("small", "zstd", 1, "raw", 2.0, 10, false),
+		makeResult("small", "zstd", 9, "raw", 3.0, 50, false),
+		makeResult("small", "zstd", 3, "json", 2.5, 30, false),
+		makeResult("small", "zstd", 9, "cbor", 3.5, 40, false),
+		makeResult("large", "zstd", 1, "raw", 4.0, 20, false),
+		makeResult("large", "zlib", 6, "json", 3.0, 60, false),
+		makeResult("large", "brotli", 6, "cbor", 5.0, 80, false),
+		// Dictionary result — should be excluded.
+		makeResult("small", "zstd", 3, "raw", 4.0, 15, true),
+	}
+
+	data := SerializationImpact(results)
+
+	assert.Equal(t, []string{"large", "small"}, data.Datasets)
+	require.Len(t, data.ByInputType, 3)
+
+	// small: best (lowest) raw=2.0, json=2.5, cbor=3.5
+	assert.InDelta(t, 2.0, data.ByInputType["raw"][1], 0.001)
+	assert.InDelta(t, 2.5, data.ByInputType["json"][1], 0.001)
+	assert.InDelta(t, 3.5, data.ByInputType["cbor"][1], 0.001)
+
+	// large: best (lowest) raw=4.0, json=3.0, cbor=5.0
+	assert.InDelta(t, 4.0, data.ByInputType["raw"][0], 0.001)
+	assert.InDelta(t, 3.0, data.ByInputType["json"][0], 0.001)
+	assert.InDelta(t, 5.0, data.ByInputType["cbor"][0], 0.001)
+}
+
+func TestSerializationImpact_Empty(t *testing.T) {
+	data := SerializationImpact(nil)
+	assert.Empty(t, data.Datasets)
+	assert.Empty(t, data.ByInputType)
 }
 
 func TestDatasets(t *testing.T) {

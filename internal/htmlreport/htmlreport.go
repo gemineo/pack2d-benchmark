@@ -33,6 +33,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .spot .cfg { color: #91cc75; }
 .recommendations { font-size: 13px; line-height: 1.8; }
 .recommendations li { margin-bottom: 2px; }
+.ratio-info { background: #fff; margin: 20px 40px 0; padding: 14px 20px; border-left: 4px solid #e74c3c; border-radius: 4px; font-size: 14px; line-height: 1.6; color: #333; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.ratio-info strong { color: #1a1a2e; }
 .charts { padding: 20px 40px; }
 .chart-section { background: #fff; border-radius: 8px; margin-bottom: 24px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .chart-section h3 { margin: 0 0 12px; font-size: 16px; color: #333; }
@@ -76,17 +78,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
     {{end}}
   </div>
   {{end}}
-  {{if .Summary.Recommendations}}
-  <div class="recommendations">
-    <ul>
-    {{range .Summary.Recommendations}}
-      <li>{{.}}</li>
-    {{end}}
-    </ul>
-  </div>
-  {{end}}
 </div>
 {{end}}
+<div class="ratio-info">
+  <strong>Compression ratio</strong> = compressed size / original size.
+  A ratio of 0.40 means the output is 40% of the original size — the data was compressed to less than half its size.
+  A ratio above 1.0 means the output is <em>larger</em> than the input (compression overhead). The red dashed line marks this break-even point.
+</div>
 <div class="charts">
 {{.ChartsHTML}}
 </div>
@@ -104,13 +102,19 @@ func Generate(rpt *report.Report, w io.Writer) error {
 		page.AddCharts(compressionRatioChart(ratioData))
 	}
 
-	// 2. Speed vs ratio scatter.
+	// 2. Serialization impact bar chart.
+	serData := SerializationImpact(rpt.Results)
+	if len(serData.Datasets) > 0 && len(serData.ByInputType) > 1 {
+		page.AddCharts(serializationImpactChart(serData))
+	}
+
+	// 3. Speed vs ratio scatter.
 	scatter := SpeedVsRatio(rpt.Results)
 	if len(scatter) > 0 {
 		page.AddCharts(speedVsRatioChart(scatter))
 	}
 
-	// 3. Level sweep per dataset.
+	// 4. Level sweep per dataset.
 	for _, ds := range Datasets(rpt.Results) {
 		series := LevelSweep(rpt.Results, ds)
 		if len(series) > 0 {
@@ -118,19 +122,19 @@ func Generate(rpt *report.Report, w io.Writer) error {
 		}
 	}
 
-	// 4. Dictionary impact (only if dict results exist).
+	// 5. Dictionary impact (only if dict results exist).
 	dictPairs := DictImpact(rpt.Results)
 	if len(dictPairs) > 0 {
 		page.AddCharts(dictImpactChart(dictPairs))
 	}
 
-	// 5. QR barcode heatmap.
+	// 6. QR barcode heatmap.
 	datasets, ecLevels, cells := BarcodeHeatmap(rpt.Results)
 	if len(cells) > 0 {
 		page.AddCharts(barcodeHeatmapChart(datasets, ecLevels, cells))
 	}
 
-	// 6. DataMatrix heatmap.
+	// 7. DataMatrix heatmap.
 	dmDatasets, dmCells := DataMatrixHeatmap(rpt.Results)
 	if len(dmCells) > 0 {
 		page.AddCharts(datamatrixHeatmapChart(dmDatasets, dmCells))
