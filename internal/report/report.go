@@ -48,13 +48,17 @@ type Summary struct {
 }
 
 // SweetSpotEntry identifies the recommended config for a dataset.
+// Found is false when no config exceeded the marginal improvement threshold;
+// in that case the entry falls back to the fastest config.
 type SweetSpotEntry struct {
 	Dataset   string  `json:"dataset"`
 	Algorithm string  `json:"algorithm"`
 	Level     int     `json:"level"`
 	InputType string  `json:"inputType"`
+	UseDict   bool    `json:"useDict,omitempty"`
 	Ratio     float64 `json:"ratio"`
 	EncodeUs  int64   `json:"encodeUs"`
+	Found     bool    `json:"found"`
 }
 
 // BestEntry records a best-in-category config.
@@ -63,6 +67,7 @@ type BestEntry struct {
 	Algorithm string  `json:"algorithm"`
 	Level     int     `json:"level"`
 	InputType string  `json:"inputType"`
+	UseDict   bool    `json:"useDict,omitempty"`
 	Ratio     float64 `json:"ratio"`
 	EncodeUs  int64   `json:"encodeUs"`
 }

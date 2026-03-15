@@ -8,6 +8,7 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/gemineo/pack2d"
+	"github.com/gemineo/pack2d/dict"
 	"github.com/spf13/cobra"
 
 	"github.com/gemineo/pack2d-benchmark/internal/config"
@@ -35,7 +36,7 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 		Use:   "run",
 		Short: "Run benchmarks",
 		Long:  "Execute benchmark scenarios against embedded or custom datasets.",
-		RunE: func(cmd *cobra.Command, _ []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) (retErr error) {
 			cfg := config.DefaultConfig()
 			cfg.Quiet = *quiet
 			cfg.NoColor = *noColor
@@ -80,7 +81,13 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 				cfg.InputTypes = parsed
 			}
 
-			_ = levels // custom levels parsing deferred to Phase 2
+			if levels != "" {
+				parsed, err := config.ParseLevels(levels, cfg.Algorithms)
+				if err != nil {
+					return err
+				}
+				cfg.Levels = parsed
+			}
 
 			if err := cfg.Validate(); err != nil {
 				return err
@@ -106,6 +113,15 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 				return fmt.Errorf("no datasets found")
 			}
 
+			// Load or auto-train dictionary.
+			if cfg.DictPath != "" {
+				d, err := loadOrTrainDict(cfg.DictPath, datasets)
+				if err != nil {
+					return err
+				}
+				cfg.Dict = d
+			}
+
 			// Setup runner.
 			r := runner.New(cfg, datasets)
 
@@ -114,6 +130,11 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 			if !cfg.Quiet {
 				sp = spinner.New(spinner.CharSets[14], 100*time.Millisecond, spinner.WithWriter(os.Stderr))
 				sp.Prefix = " "
+				defer func() {
+					if sp.Active() {
+						sp.Stop()
+					}
+				}()
 				r.SetProgressFunc(func(scenario, ds, detail string) {
 					sp.Suffix = fmt.Sprintf(" [%s] %s — %s", scenario, ds, detail)
 					if !sp.Active() {
@@ -130,14 +151,7 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 
 			results, err := r.Run(ctx)
 			if err != nil {
-				if sp != nil && sp.Active() {
-					sp.Stop()
-				}
 				return err
-			}
-
-			if sp != nil && sp.Active() {
-				sp.Stop()
 			}
 
 			// Build report.
@@ -150,7 +164,11 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 				if openErr != nil {
 					return fmt.Errorf("create output file: %w", openErr)
 				}
-				defer f.Close()
+				defer func() {
+					if closeErr := f.Close(); closeErr != nil && retErr == nil {
+						retErr = fmt.Errorf("close output file: %w", closeErr)
+					}
+				}()
 				out = f
 			}
 
@@ -164,7 +182,11 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 				if openErr != nil {
 					return fmt.Errorf("create export file: %w", openErr)
 				}
-				defer f.Close()
+				defer func() {
+					if closeErr := f.Close(); closeErr != nil && retErr == nil {
+						retErr = fmt.Errorf("close export file: %w", closeErr)
+					}
+				}()
 				if err := report.ExportJSON(f, rpt); err != nil {
 					return fmt.Errorf("export JSON: %w", err)
 				}
@@ -180,11 +202,54 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 	cmd.Flags().StringVar(&export, "export", "", "Export results as JSON to file")
 	cmd.Flags().StringVar(&scenarios, "scenarios", "", "Comma-separated scenarios (compression,barcode)")
 	cmd.Flags().StringVar(&algorithms, "algorithms", "", "Comma-separated algorithms (zlib,zstd,brotli)")
-	cmd.Flags().StringVar(&levels, "levels", "", "Comma-separated compression levels (deferred)")
+	cmd.Flags().StringVar(&levels, "levels", "", "Comma-separated compression levels")
 	cmd.Flags().IntVar(&iterations, "iterations", 20, "Number of benchmark iterations")
 	cmd.Flags().StringVar(&inputTypes, "input-types", "", "Comma-separated input types (raw,json)")
 	cmd.Flags().IntVar(&warmUp, "warm-up", 3, "Number of warm-up iterations")
-	cmd.Flags().StringVar(&dictPath, "dict", "", "Path to zstd dictionary file")
+	cmd.Flags().StringVar(&dictPath, "dict", "", "Path to zstd dictionary file, or \"auto\" to train from datasets")
 
 	return cmd
+}
+
+// loadOrTrainDict loads a dictionary from file or auto-trains one from datasets.
+func loadOrTrainDict(path string, datasets []dataset.Dataset) (*dict.Dictionary, error) {
+	if path == "auto" {
+		return trainDictFromDatasets(datasets)
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("load dictionary: %w", err)
+	}
+
+	return &dict.Dictionary{
+		ID:   1,
+		Name: "user-provided",
+		Data: data,
+	}, nil
+}
+
+// trainDictFromDatasets trains a zstd dictionary from all available datasets.
+func trainDictFromDatasets(datasets []dataset.Dataset) (*dict.Dictionary, error) {
+	var samples [][]byte
+	for _, ds := range datasets {
+		if len(ds.Data) > 0 {
+			samples = append(samples, ds.Data)
+		}
+	}
+	if len(samples) == 0 {
+		return nil, fmt.Errorf("train dictionary: no samples available")
+	}
+
+	dictData, err := dict.Train(samples, "zstd")
+	if err != nil {
+		return nil, fmt.Errorf("train dictionary: %w", err)
+	}
+
+	return &dict.Dictionary{
+		ID:          1,
+		Name:        "auto-trained",
+		Data:        dictData,
+		SampleCount: len(samples),
+	}, nil
 }

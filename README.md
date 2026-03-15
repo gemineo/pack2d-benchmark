@@ -22,8 +22,17 @@ Requires Go 1.26+ and the `pack2d` repository as a sibling directory.
 # Focus on a specific algorithm
 ./bin/pack2d-benchmark run --scenarios compression --algorithms zstd
 
+# Run with zstd dictionary auto-trained from datasets
+./bin/pack2d-benchmark run --dict auto
+
+# Specify custom compression levels
+./bin/pack2d-benchmark run --levels 1,5,9
+
 # Export results as JSON
-./bin/pack2d-benchmark run --export results.json
+./bin/pack2d-benchmark run --export output/results.json
+
+# Generate interactive HTML report from exported JSON
+./bin/pack2d-benchmark report output/results.json -o output/report.html
 ```
 
 ## Commands
@@ -36,14 +45,34 @@ Execute benchmark scenarios against datasets.
 |------|---------|-------------|
 | `--scenarios` | `compression,barcode` | Comma-separated scenarios to run |
 | `--algorithms` | `zlib,zstd,brotli` | Compression algorithms to benchmark |
+| `--levels` | _(all)_ | Comma-separated compression levels (applied to all algorithms) |
 | `--iterations` | `20` | Number of measured iterations |
 | `--warm-up` | `3` | Warm-up iterations (discarded) |
 | `--input-types` | `raw,json` | Serialization input types |
+| `--dict` | | Path to zstd dictionary file, or `auto` to train from datasets |
 | `--data` | _(embedded)_ | Custom dataset directory |
 | `--export` | | Export JSON report to file |
 | `--output` | _(stdout)_ | Write ASCII output to file |
 | `--quiet` | `false` | Suppress progress spinner |
 | `--no-color` | `false` | Disable colored output |
+
+### `report`
+
+Generate a self-contained HTML report with interactive charts from a JSON export.
+
+```bash
+# Generate HTML report from benchmark results
+./bin/pack2d-benchmark report output/results.json
+
+# Specify output path
+./bin/pack2d-benchmark report output/results.json -o output/report.html
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--output / -o` | _(input with .html ext)_ | Output HTML file path |
+
+The report includes compression ratio comparison, encode speed vs ratio scatter, level sweep line charts per dataset, dictionary impact (when dict results exist), and QR code feasibility heatmap.
 
 ### `datasets`
 
@@ -66,9 +95,13 @@ Print tool version, Go version, and OS/architecture.
 
 ## Scenarios
 
-**compression** — Benchmarks all algorithm x level x input-type combinations per dataset. Reports encode/decode timing, compression ratio, and QR code feasibility.
+**compression** — Benchmarks all algorithm x level x input-type combinations per dataset. By default covers the full level range for each algorithm (zlib 1–9, zstd 1–19, brotli 0–11). When `--dict` is provided, zstd configurations are additionally benchmarked with dictionary compression. Reports encode/decode timing, compression ratio, and QR code feasibility. Incompatible input types (e.g., binary data with JSON serialization) are silently skipped.
 
-**barcode** — Finds the best compression config per dataset for barcode use. Shows QR code (L/M/Q/H) and DataMatrix feasibility with PASS/FAIL.
+**barcode** — Finds the best compression config per dataset for barcode use, including dictionary variants when `--dict` is provided. Shows QR code (L/M/Q/H) and DataMatrix feasibility with PASS/FAIL. Incompatible input types are skipped; real errors are propagated.
+
+### Sweet-Spot Recommendations
+
+The summary identifies a "sweet spot" config per dataset — the last configuration where marginal ratio improvement exceeds 0.05% per microsecond of additional encode time. When no configuration meets this threshold, the recommendation falls back to the fastest config and the label indicates that no sweet spot was found.
 
 ## Development
 

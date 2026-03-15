@@ -26,10 +26,10 @@ func ComputeSummary(results []runner.Result) *Summary {
 			continue
 		}
 
-		// Best ratio.
+		// Best ratio (lowest = most compression).
 		bestRatio := dResults[0]
 		for _, r := range dResults[1:] {
-			if r.Ratio > bestRatio.Ratio {
+			if r.Ratio < bestRatio.Ratio {
 				bestRatio = r
 			}
 		}
@@ -38,6 +38,7 @@ func ComputeSummary(results []runner.Result) *Summary {
 			Algorithm: string(bestRatio.Algorithm),
 			Level:     bestRatio.Level,
 			InputType: string(bestRatio.InputType),
+			UseDict:   bestRatio.UseDict,
 			Ratio:     bestRatio.Ratio,
 			EncodeUs:  bestRatio.Encode.Mean.Microseconds(),
 		})
@@ -54,6 +55,7 @@ func ComputeSummary(results []runner.Result) *Summary {
 			Algorithm: string(bestSpeed.Algorithm),
 			Level:     bestSpeed.Level,
 			InputType: string(bestSpeed.InputType),
+			UseDict:   bestSpeed.UseDict,
 			Ratio:     bestSpeed.Ratio,
 			EncodeUs:  bestSpeed.Encode.Mean.Microseconds(),
 		})
@@ -67,15 +69,21 @@ func ComputeSummary(results []runner.Result) *Summary {
 		})
 
 		sweetIdx := 0
+		sweetFound := false
 		for i := 1; i < len(sorted); i++ {
 			timeDelta := sorted[i].Encode.Mean.Microseconds() - sorted[i-1].Encode.Mean.Microseconds()
 			if timeDelta <= 0 {
 				continue
 			}
-			ratioDelta := sorted[i].Ratio - sorted[i-1].Ratio
-			marginal := (ratioDelta / sorted[i-1].Ratio * 100) / float64(timeDelta)
+			if sorted[i-1].Ratio == 0 {
+				continue
+			}
+			// Ratio = compressed/original, so improvement = ratio going down.
+			ratioDrop := sorted[i-1].Ratio - sorted[i].Ratio
+			marginal := (ratioDrop / sorted[i-1].Ratio * 100) / float64(timeDelta)
 			if marginal > 0.05 {
 				sweetIdx = i
+				sweetFound = true
 			}
 		}
 
@@ -85,8 +93,10 @@ func ComputeSummary(results []runner.Result) *Summary {
 			Algorithm: string(sweet.Algorithm),
 			Level:     sweet.Level,
 			InputType: string(sweet.InputType),
+			UseDict:   sweet.UseDict,
 			Ratio:     sweet.Ratio,
 			EncodeUs:  sweet.Encode.Mean.Microseconds(),
+			Found:     sweetFound,
 		})
 
 		// Count QR fits.
@@ -118,8 +128,16 @@ func generateRecommendations(s *Summary) []string {
 	var recs []string
 
 	for _, ss := range s.SweetSpot {
-		recs = append(recs, fmt.Sprintf("[%s] Sweet spot: %s/L%d/%s (ratio: %.2fx, encode: %dµs)",
-			ss.Dataset, ss.Algorithm, ss.Level, ss.InputType, ss.Ratio, ss.EncodeUs))
+		label := "Sweet spot"
+		if !ss.Found {
+			label = "Fastest (no sweet spot found)"
+		}
+		dictSuffix := ""
+		if ss.UseDict {
+			dictSuffix = "+dict"
+		}
+		recs = append(recs, fmt.Sprintf("[%s] %s: %s/L%d/%s%s (ratio: %.2fx, encode: %dµs)",
+			ss.Dataset, label, ss.Algorithm, ss.Level, ss.InputType, dictSuffix, ss.Ratio, ss.EncodeUs))
 	}
 
 	if len(s.QRFitCounts) > 0 {

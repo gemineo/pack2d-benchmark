@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+  <measurement sensor="temp-001" type="measurement" status="normal">
+    <location building="A" floor="3" room="301"/>
+    <value unit="celsius">23.5</value>
+  </measurement>
+</measurements>

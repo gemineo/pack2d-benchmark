@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<productCatalog>
+  <catalog id="cat_2024Q4" currency="EUR" lastUpdated="2024-12-01T00:00:00Z">
+    <name>Winter Collection 2024</name>
+    <description>Premium winter clothing and accessories for the discerning customer. Features sustainable materials and modern designs.</description>
+  </catalog>
+  <products>
+    <product sku="WJ-001-BLK-M" category="outerwear" inStock="true" quantity="142">
+      <name>Alpine Down Jacket</name>
+      <description>Lightweight 800-fill down jacket with water-resistant shell. Perfect for cold weather commuting and weekend adventures.</description>
+      <price currency="EUR">289.99</price>
+      <compareAtPrice currency="EUR">349.99</compareAtPrice>
+      <sizes>
+        <size>XS</size>
+        <size>S</size>
+        <size>M</size>
+        <size>L</size>
+        <size>XL</size>
+        <size>XXL</size>
+      </sizes>
+      <colors>
+        <color name="Black" hex="#1a1a1a"/>
+        <color name="Navy" hex="#1b2a4a"/>
+        <color name="Forest" hex="#2d4a2d"/>
+      </colors>
+      <materials>
+        <material>90% recycled down</material>
+        <material>10% feathers</material>
+        <material>nylon ripstop shell</material>
+      </materials>
+      <weight value="420" unit="g"/>
+      <ratings average="4.7" count="238"/>
+      <tags>
+        <tag>bestseller</tag>
+        <tag>sustainable</tag>
+        <tag>lightweight</tag>
+        <tag>packable</tag>
+      </tags>
+    </product>
+    <product sku="WS-012-GRY-L" category="knitwear" inStock="true" quantity="87">
+      <name>Merino Wool Sweater</name>
+      <description>Extra-fine merino wool crew neck sweater. Temperature-regulating and naturally odor-resistant for all-day comfort.</description>
+      <price currency="EUR">129.99</price>
+      <sizes>
+        <size>S</size>
+        <size>M</size>
+        <size>L</size>
+        <size>XL</size>
+      </sizes>
+      <colors>
+        <color name="Heather Grey" hex="#9e9e9e"/>
+        <color name="Burgundy" hex="#722f37"/>
+        <color name="Camel" hex="#c19a6b"/>
+        <color name="Charcoal" hex="#36454f"/>
+      </colors>
+      <materials>
+        <material>100% extra-fine merino wool (18.5 micron)</material>
+      </materials>
+      <weight value="310" unit="g"/>
+      <ratings average="4.5" count="156"/>
+      <tags>
+        <tag>classic</tag>
+        <tag>merino</tag>
+        <tag>temperature-regulating</tag>
+      </tags>
+    </product>
+    <product sku="WB-007-TAN-42" category="footwear" inStock="true" quantity="34">
+      <name>Chelsea Leather Boot</name>
+      <description>Full-grain leather Chelsea boot with Goodyear welt construction. Leather-lined interior with cushioned insole for superior comfort.</description>
+      <price currency="EUR">349.99</price>
+      <compareAtPrice currency="EUR">399.99</compareAtPrice>
+      <sizes>
+        <size>39</size>
+        <size>40</size>
+        <size>41</size>
+        <size>42</size>
+        <size>43</size>
+        <size>44</size>
+        <size>45</size>
+        <size>46</size>
+      </sizes>
+      <colors>
+        <color name="Tan" hex="#d2b48c"/>
+        <color name="Dark Brown" hex="#3b2f2f"/>
+        <color name="Black" hex="#1a1a1a"/>
+      </colors>
+      <materials>
+        <material>full-grain leather upper</material>
+        <material>leather lining</material>
+        <material>rubber sole</material>
+      </materials>
+      <weight value="780" unit="g"/>
+      <ratings average="4.8" count="89"/>
+      <tags>
+        <tag>premium</tag>
+        <tag>goodyear-welt</tag>
+        <tag>classic</tag>
+      </tags>
+    </product>
+    <product sku="WA-021-NVY-OS" category="accessories" inStock="true" quantity="210">
+      <name>Cashmere Blend Scarf</name>
+      <description>Luxuriously soft cashmere-wool blend scarf. Generous proportions allow for multiple styling options.</description>
+      <price currency="EUR">89.99</price>
+      <sizes>
+        <size>one-size</size>
+      </sizes>
+      <colors>
+        <color name="Navy" hex="#1b2a4a"/>
+        <color name="Oatmeal" hex="#d4c5a9"/>
+        <color name="Bordeaux" hex="#5c1a1a"/>
+        <color name="Sage" hex="#87ae73"/>
+        <color name="Slate" hex="#708090"/>
+      </colors>
+      <materials>
+        <material>70% wool</material>
+        <material>30% cashmere</material>
+      </materials>
+      <weight value="180" unit="g"/>
+      <ratings average="4.6" count="312"/>
+      <tags>
+        <tag>gift-idea</tag>
+        <tag>cashmere</tag>
+        <tag>versatile</tag>
+      </tags>
+    </product>
+    <product sku="WP-005-OLV-32" category="trousers" inStock="false" quantity="0">
+      <name>Technical Cargo Pant</name>
+      <description>Stretch-woven cargo pant with DWR coating. Features articulated knees and zippered cargo pockets for a clean silhouette.</description>
+      <price currency="EUR">159.99</price>
+      <compareAtPrice currency="EUR">189.99</compareAtPrice>
+      <sizes>
+        <size>28</size>
+        <size>30</size>
+        <size>32</size>
+        <size>34</size>
+        <size>36</size>
+        <size>38</size>
+      </sizes>
+      <colors>
+        <color name="Olive" hex="#556b2f"/>
+        <color name="Black" hex="#1a1a1a"/>
+        <color name="Stone" hex="#928e85"/>
+      </colors>
+      <materials>
+        <material>97% nylon</material>
+        <material>3% elastane</material>
+        <material>DWR finish</material>
+      </materials>
+      <weight value="340" unit="g"/>
+      <ratings average="4.3" count="67"/>
+      <tags>
+        <tag>technical</tag>
+        <tag>water-resistant</tag>
+        <tag>stretch</tag>
+      </tags>
+    </product>
+  </products>
+  <metadata totalProducts="5" version="1.0.0" generatedAt="2024-12-01T10:00:00Z">
+    <categories>
+      <category>outerwear</category>
+      <category>knitwear</category>
+      <category>footwear</category>
+      <category>accessories</category>
+      <category>trousers</category>
+    </categories>
+    <priceRange min="89.99" max="349.99"/>
+  </metadata>
+</productCatalog>

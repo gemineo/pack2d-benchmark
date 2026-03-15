@@ -6,6 +6,7 @@ import (
 	"math"
 
 	"github.com/gemineo/pack2d"
+	"github.com/gemineo/pack2d/dict"
 
 	"github.com/gemineo/pack2d-benchmark/internal/config"
 	"github.com/gemineo/pack2d-benchmark/internal/dataset"
@@ -34,7 +35,7 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 		var bestAlgo pack2d.CompressionType
 		var bestLevel int
 		var bestInputType pack2d.InputType
-		var bestEncoded string
+		var bestUseDict bool
 		var bestStats pack2d.Stats
 		var bestEncTiming TimingStats
 		var bestDecTiming TimingStats
@@ -45,31 +46,63 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 				levels = config.DefaultLevels[algo]
 			}
 
+			// Determine dict modes.
+			type dictMode struct {
+				useDict bool
+				d       *dict.Dictionary
+			}
+			modes := []dictMode{{useDict: false}}
+			if cfg.Dict != nil && algo == pack2d.Zstd {
+				modes = append(modes, dictMode{useDict: true, d: cfg.Dict})
+			}
+
 			for _, level := range levels {
 				for _, inputType := range cfg.InputTypes {
-					opts := []pack2d.Option{
-						pack2d.WithCompression(algo),
-						pack2d.WithCompressionLevel(level),
-						pack2d.WithInputType(inputType),
-					}
+					for _, dm := range modes {
+						opts := []pack2d.Option{
+							pack2d.WithCompression(algo),
+							pack2d.WithCompressionLevel(level),
+							pack2d.WithInputType(inputType),
+						}
+						if dm.useDict {
+							opts = append(opts, pack2d.WithDictionary(dm.d))
+						}
 
-					encTiming, encoded, stats, err := MeasureEncode(ds.Data, opts, cfg.WarmUp, cfg.Iterations)
-					if err != nil {
-						continue // skip failing configs
-					}
+						encTiming, encoded, stats, err := MeasureEncode(ds.Data, opts, cfg.WarmUp, cfg.Iterations)
+						if err != nil {
+							if isSkippable(err) {
+								continue
+							}
+							return nil, fmt.Errorf("barcode encode %s/%s/L%d/%s: %w", ds.Name, algo, level, inputType, err)
+						}
 
-					if len(encoded) < bestLen {
-						bestLen = len(encoded)
-						bestAlgo = algo
-						bestLevel = level
-						bestInputType = inputType
-						bestEncoded = encoded
-						bestStats = stats
-						bestEncTiming = encTiming
+						if len(encoded) < bestLen {
+							bestLen = len(encoded)
+							bestAlgo = algo
+							bestLevel = level
+							bestInputType = inputType
+							bestUseDict = dm.useDict
+							bestStats = stats
+							bestEncTiming = encTiming
 
-						decTiming, decErr := MeasureDecode(encoded, opts, cfg.WarmUp, cfg.Iterations)
-						if decErr == nil {
-							bestDecTiming = decTiming
+							decOpts := opts
+							if dm.useDict {
+								store := dict.NewMemoryStore()
+								if saveErr := store.Save(dm.d); saveErr != nil {
+									return nil, fmt.Errorf("barcode decode dict store %s: %w", ds.Name, saveErr)
+								}
+								decOpts = []pack2d.Option{
+									pack2d.WithCompression(algo),
+									pack2d.WithCompressionLevel(level),
+									pack2d.WithInputType(inputType),
+									pack2d.WithDictStore(store),
+								}
+							}
+
+							decTiming, decErr := MeasureDecode(encoded, decOpts, cfg.WarmUp, cfg.Iterations)
+							if decErr == nil {
+								bestDecTiming = decTiming
+							}
 						}
 					}
 				}
@@ -80,7 +113,6 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 			continue // no valid config found
 		}
 
-		_ = bestEncoded
 		checks := makeBarcodeChecks(bestLen)
 
 		results = append(results, Result{
@@ -90,6 +122,7 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 			Algorithm:   bestAlgo,
 			Level:       bestLevel,
 			InputType:   bestInputType,
+			UseDict:     bestUseDict,
 			InputBytes:  bestStats.InputBytes,
 			Compressed:  bestStats.CompressedBytes,
 			Encoded:     bestStats.EncodedBytes,

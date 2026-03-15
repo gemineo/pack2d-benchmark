@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/gemineo/pack2d"
+	"github.com/gemineo/pack2d/dict"
 
 	"github.com/gemineo/pack2d-benchmark/internal/config"
 	"github.com/gemineo/pack2d-benchmark/internal/dataset"
@@ -34,54 +36,89 @@ func (s *CompressionScenario) Run(ctx context.Context, datasets []dataset.Datase
 				levels = config.DefaultLevels[algo]
 			}
 
+			// Determine dict modes: always run without dict; also run with dict for zstd when available.
+			type dictMode struct {
+				useDict bool
+				d       *dict.Dictionary
+			}
+			modes := []dictMode{{useDict: false}}
+			if cfg.Dict != nil && algo == pack2d.Zstd {
+				modes = append(modes, dictMode{useDict: true, d: cfg.Dict})
+			}
+
 			for _, level := range levels {
 				for _, inputType := range cfg.InputTypes {
-					if err := ctx.Err(); err != nil {
-						return results, fmt.Errorf("compression scenario: %w", err)
-					}
-
-					if progressFn != nil {
-						progressFn("compression", ds.Name, fmt.Sprintf("%s/L%d/%s", algo, level, inputType))
-					}
-
-					opts := []pack2d.Option{
-						pack2d.WithCompression(algo),
-						pack2d.WithCompressionLevel(level),
-						pack2d.WithInputType(inputType),
-					}
-
-					encStats, encoded, p2dStats, err := MeasureEncode(ds.Data, opts, cfg.WarmUp, cfg.Iterations)
-					if err != nil {
-						if isSkippable(err) {
-							continue
+					for _, dm := range modes {
+						if err := ctx.Err(); err != nil {
+							return results, fmt.Errorf("compression scenario: %w", err)
 						}
-						return nil, fmt.Errorf("compression encode %s/%s/L%d/%s: %w", ds.Name, algo, level, inputType, err)
+
+						label := fmt.Sprintf("%s/L%d/%s", algo, level, inputType)
+						if dm.useDict {
+							label += "+dict"
+						}
+						if progressFn != nil {
+							progressFn("compression", ds.Name, label)
+						}
+
+						opts := []pack2d.Option{
+							pack2d.WithCompression(algo),
+							pack2d.WithCompressionLevel(level),
+							pack2d.WithInputType(inputType),
+						}
+						if dm.useDict {
+							opts = append(opts, pack2d.WithDictionary(dm.d))
+						}
+
+						encStats, encoded, p2dStats, err := MeasureEncode(ds.Data, opts, cfg.WarmUp, cfg.Iterations)
+						if err != nil {
+							if isSkippable(err) {
+								continue
+							}
+							return nil, fmt.Errorf("compression encode %s/%s: %w", ds.Name, label, err)
+						}
+
+						// For decode with dictionary, provide a dict store.
+						decOpts := opts
+						if dm.useDict {
+							store := dict.NewMemoryStore()
+							if saveErr := store.Save(dm.d); saveErr != nil {
+								return nil, fmt.Errorf("compression decode dict store %s/%s: %w", ds.Name, label, saveErr)
+							}
+							decOpts = []pack2d.Option{
+								pack2d.WithCompression(algo),
+								pack2d.WithCompressionLevel(level),
+								pack2d.WithInputType(inputType),
+								pack2d.WithDictStore(store),
+							}
+						}
+
+						decStats, err := MeasureDecode(encoded, decOpts, cfg.WarmUp, cfg.Iterations)
+						if err != nil {
+							return nil, fmt.Errorf("compression decode %s/%s: %w", ds.Name, label, err)
+						}
+
+						// Barcode feasibility checks.
+						encodedLen := len(encoded)
+						checks := makeBarcodeChecks(encodedLen)
+
+						results = append(results, Result{
+							Scenario:    "compression",
+							Dataset:     ds.Name,
+							DatasetSize: ds.Size,
+							Algorithm:   algo,
+							Level:       level,
+							InputType:   inputType,
+							UseDict:     dm.useDict,
+							InputBytes:  p2dStats.InputBytes,
+							Compressed:  p2dStats.CompressedBytes,
+							Encoded:     p2dStats.EncodedBytes,
+							Ratio:       p2dStats.CompressionRatio,
+							Encode:      encStats,
+							Decode:      decStats,
+							Barcode:     &BarcodeResult{Checks: checks},
+						})
 					}
-
-					decStats, err := MeasureDecode(encoded, opts, cfg.WarmUp, cfg.Iterations)
-					if err != nil {
-						return nil, fmt.Errorf("compression decode %s/%s/L%d/%s: %w", ds.Name, algo, level, inputType, err)
-					}
-
-					// Barcode feasibility checks.
-					encodedLen := len(encoded)
-					checks := makeBarcodeChecks(encodedLen)
-
-					results = append(results, Result{
-						Scenario:    "compression",
-						Dataset:     ds.Name,
-						DatasetSize: ds.Size,
-						Algorithm:   algo,
-						Level:       level,
-						InputType:   inputType,
-						InputBytes:  p2dStats.InputBytes,
-						Compressed:  p2dStats.CompressedBytes,
-						Encoded:     p2dStats.EncodedBytes,
-						Ratio:       p2dStats.CompressionRatio,
-						Encode:      encStats,
-						Decode:      decStats,
-						Barcode:     &BarcodeResult{Checks: checks},
-					})
 				}
 			}
 		}
@@ -138,6 +175,11 @@ func isSkippable(err error) bool {
 		if errors.Is(err, target) {
 			return true
 		}
+	}
+	// Serialization errors (e.g. XML data through JSON serializer or vice versa)
+	// indicate an incompatible dataset/input-type combination.
+	if strings.Contains(err.Error(), "pack2d encode: serialize:") {
+		return true
 	}
 	return false
 }

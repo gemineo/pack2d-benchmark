@@ -15,7 +15,10 @@ import (
 
 // RenderASCII writes the report as formatted ASCII tables.
 func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
+	// Save and restore global color state to avoid side effects.
+	prevNoColor := color.NoColor
 	color.NoColor = noColor
+	defer func() { color.NoColor = prevNoColor }()
 
 	headerColor := color.New(color.FgCyan, color.Bold)
 	passColor := color.New(color.FgGreen)
@@ -39,6 +42,15 @@ func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
 		headerColor.Fprintln(w, "═══ Compression Benchmark ═══")
 		fmt.Fprintln(w)
 
+		// Check if any result uses a dictionary.
+		hasDict := false
+		for _, r := range results {
+			if r.UseDict {
+				hasDict = true
+				break
+			}
+		}
+
 		byDataset := groupByDataset(results)
 		for _, dsName := range sortedKeys(byDataset) {
 			dsResults := byDataset[dsName]
@@ -46,15 +58,28 @@ func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
 
 			t := table.NewWriter()
 			t.SetOutputMirror(w)
-			t.AppendHeader(table.Row{"Algorithm", "Level", "Input", "Compressed", "Encoded", "Ratio", "Encode", "Decode", "QR-M"})
-			t.SetColumnConfigs([]table.ColumnConfig{
-				{Number: 4, Align: text.AlignRight},
-				{Number: 5, Align: text.AlignRight},
-				{Number: 6, Align: text.AlignRight},
-				{Number: 7, Align: text.AlignRight},
-				{Number: 8, Align: text.AlignRight},
-				{Number: 9, Align: text.AlignCenter},
-			})
+
+			if hasDict {
+				t.AppendHeader(table.Row{"Algorithm", "Level", "Input", "Dict", "Compressed", "Encoded", "Ratio", "Encode", "Decode", "QR-M"})
+				t.SetColumnConfigs([]table.ColumnConfig{
+					{Number: 5, Align: text.AlignRight},
+					{Number: 6, Align: text.AlignRight},
+					{Number: 7, Align: text.AlignRight},
+					{Number: 8, Align: text.AlignRight},
+					{Number: 9, Align: text.AlignRight},
+					{Number: 10, Align: text.AlignCenter},
+				})
+			} else {
+				t.AppendHeader(table.Row{"Algorithm", "Level", "Input", "Compressed", "Encoded", "Ratio", "Encode", "Decode", "QR-M"})
+				t.SetColumnConfigs([]table.ColumnConfig{
+					{Number: 4, Align: text.AlignRight},
+					{Number: 5, Align: text.AlignRight},
+					{Number: 6, Align: text.AlignRight},
+					{Number: 7, Align: text.AlignRight},
+					{Number: 8, Align: text.AlignRight},
+					{Number: 9, Align: text.AlignCenter},
+				})
+			}
 
 			for _, r := range dsResults {
 				qrStatus := "N/A"
@@ -71,17 +96,36 @@ func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
 					}
 				}
 
-				t.AppendRow(table.Row{
-					string(r.Algorithm),
-					r.Level,
-					string(r.InputType),
-					formatSize(r.Compressed),
-					formatSize(r.Encoded),
-					fmt.Sprintf("%.2fx", r.Ratio),
-					formatDuration(r.Encode.Mean),
-					formatDuration(r.Decode.Mean),
-					qrStatus,
-				})
+				if hasDict {
+					dictLabel := ""
+					if r.UseDict {
+						dictLabel = "yes"
+					}
+					t.AppendRow(table.Row{
+						string(r.Algorithm),
+						r.Level,
+						string(r.InputType),
+						dictLabel,
+						formatSize(r.Compressed),
+						formatSize(r.Encoded),
+						fmt.Sprintf("%.2fx", r.Ratio),
+						formatDuration(r.Encode.Mean),
+						formatDuration(r.Decode.Mean),
+						qrStatus,
+					})
+				} else {
+					t.AppendRow(table.Row{
+						string(r.Algorithm),
+						r.Level,
+						string(r.InputType),
+						formatSize(r.Compressed),
+						formatSize(r.Encoded),
+						fmt.Sprintf("%.2fx", r.Ratio),
+						formatDuration(r.Encode.Mean),
+						formatDuration(r.Decode.Mean),
+						qrStatus,
+					})
+				}
 			}
 
 			t.SetStyle(table.StyleLight)
@@ -108,6 +152,9 @@ func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
 
 		for _, r := range results {
 			configStr := fmt.Sprintf("%s/L%d/%s", r.Algorithm, r.Level, r.InputType)
+			if r.UseDict {
+				configStr += "+dict"
+			}
 
 			row := table.Row{
 				r.Dataset,

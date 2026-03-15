@@ -12,8 +12,8 @@ func TestLoadEmbedded(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, datasets)
 
-	// Expect 6 embedded datasets.
-	assert.Len(t, datasets, 6)
+	// Expect 11 embedded datasets (5 JSON + 5 XML + 1 adversarial).
+	assert.Len(t, datasets, 11)
 
 	// Verify sorted by size.
 	for i := 1; i < len(datasets); i++ {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user id="usr_7f3a2b1c" verified="true">
+  <firstName>Alice</firstName>
+  <lastName>Martin</lastName>
+  <email>alice.martin@example.com</email>
+  <age>34</age>
+  <address>
+    <street>42 Rue de Rivoli</street>
+    <city>Paris</city>
+    <postalCode>75001</postalCode>
+    <country>FR</country>
+  </address>
+  <phone>+33 1 42 60 00 00</phone>
+  <preferences newsletter="true" darkMode="false" language="fr" timezone="Europe/Paris"/>
+  <roles>
+    <role>user</role>
+    <role>beta-tester</role>
+  </roles>
+  <createdAt>2024-11-15T09:30:00Z</createdAt>
+  <lastLogin>2025-03-10T14:22:31Z</lastLogin>
+</user>

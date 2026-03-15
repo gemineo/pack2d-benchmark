@@ -15,7 +15,7 @@ func TestDefaultConfig(t *testing.T) {
 	assert.Equal(t, 20, cfg.Iterations)
 	assert.Equal(t, 3, cfg.WarmUp)
 	assert.Len(t, cfg.Algorithms, 3)
-	assert.Len(t, cfg.InputTypes, 2)
+	assert.Len(t, cfg.InputTypes, 4)
 	assert.Len(t, cfg.Scenarios, 2)
 }
 
