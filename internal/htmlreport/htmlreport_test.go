@@ -53,6 +53,16 @@ func TestGenerate_ContainsExpectedElements(t *testing.T) {
 			},
 		},
 		Summary: &report.Summary{
+			BestRatio: []report.BestEntry{
+				{
+					Dataset:   "test-ds",
+					Algorithm: "zstd",
+					Level:     3,
+					InputType: "raw",
+					Ratio:     2.5,
+					EncodeUs:  100,
+				},
+			},
 			SweetSpot: []report.SweetSpotEntry{
 				{
 					Dataset:   "test-ds",
@@ -84,6 +94,8 @@ func TestGenerate_ContainsExpectedElements(t *testing.T) {
 	assert.True(t, strings.Contains(html, "test-ds"), "should contain dataset name")
 	assert.True(t, strings.Contains(html, "zstd L3"), "should contain sweet spot config")
 	assert.True(t, strings.Contains(html, "Use zstd level 3"), "should contain recommendation")
+	assert.True(t, strings.Contains(html, "Best Compression Ratio"), "should contain best ratio heading")
+	assert.True(t, strings.Contains(html, "Sweet Spot"), "should contain sweet spot heading")
 
 	// Charts (go-echarts renders these as divs with echarts init).
 	assert.True(t, strings.Contains(html, "echarts"), "should contain echarts reference")
@@ -140,6 +152,36 @@ func TestGenerate_WithBarcodeResults(t *testing.T) {
 	html := buf.String()
 	assert.True(t, strings.Contains(html, "QR Code Feasibility") || strings.Contains(html, "echarts"),
 		"should contain heatmap or echarts reference")
+}
+
+func TestGenerate_WithDataMatrixResults(t *testing.T) {
+	rpt := &report.Report{
+		Metadata: report.Metadata{
+			ToolVersion: "test",
+			GoVersion:   "go1.26.1",
+			Timestamp:   time.Now(),
+		},
+		Results: []runner.Result{
+			{
+				Scenario: "barcode",
+				Dataset:  "small",
+				Encoded:  200,
+				Barcode: &runner.BarcodeResult{
+					Checks: []runner.BarcodeCheck{
+						{BarcodeType: "datamatrix", ECLevel: "ECC200", Fits: true},
+					},
+				},
+			},
+		},
+	}
+
+	var buf bytes.Buffer
+	err := Generate(rpt, &buf)
+	require.NoError(t, err)
+
+	html := buf.String()
+	assert.True(t, strings.Contains(html, "DataMatrix Feasibility") || strings.Contains(html, "echarts"),
+		"should contain DataMatrix heatmap or echarts reference")
 }
 
 func TestGenerate_WithDictResults(t *testing.T) {

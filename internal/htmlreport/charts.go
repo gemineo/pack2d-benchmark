@@ -27,7 +27,8 @@ func compressionRatioChart(data RatioBarData) *charts.Bar {
 	bar := charts.NewBar()
 	bar.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title: "Best Compression Ratio by Dataset",
+			Title:    "Best Compression Ratio by Dataset",
+			Subtitle: "Higher ratio = better compression",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
@@ -62,14 +63,15 @@ func speedVsRatioChart(points []ScatterPoint) *charts.Scatter {
 	scatter := charts.NewScatter()
 	scatter.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title: "Encode Speed vs Compression Ratio",
+			Title:    "Encode Speed vs Compression Ratio",
+			Subtitle: "Bottom-right is ideal: fast encode + high ratio",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{
 			Show:    opts.Bool(true),
 			Trigger: "item",
 		}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
-		charts.WithXAxisOpts(opts.XAxis{Name: "Encode Time (µs)", Type: "value"}),
+		charts.WithXAxisOpts(opts.XAxis{Name: "Encode Time (µs)", Type: "log"}),
 		charts.WithYAxisOpts(opts.YAxis{Name: "Ratio", Type: "value"}),
 		charts.WithInitializationOpts(opts.Initialization{
 			Width:  "1100px",
@@ -103,7 +105,8 @@ func levelSweepChart(dataset string, series []LevelSweepSeries) *charts.Line {
 	line := charts.NewLine()
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title: fmt.Sprintf("Level Sweep — %s", dataset),
+			Title:    fmt.Sprintf("Level Sweep — %s", dataset),
+			Subtitle: "Higher ratio = better compression",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true), Trigger: "axis"}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
@@ -162,7 +165,8 @@ func dictImpactChart(pairs []DictPair) *charts.Bar {
 	bar := charts.NewBar()
 	bar.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title: "Dictionary Impact (zstd)",
+			Title:    "Dictionary Impact (zstd)",
+			Subtitle: "Higher ratio = better compression",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
@@ -196,9 +200,12 @@ func barcodeHeatmapChart(datasets, ecLevels []string, cells []HeatmapCell) *char
 	hm := charts.NewHeatMap()
 	hm.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title: "QR Code Feasibility",
+			Title:    "QR Code Feasibility",
+			Subtitle: "Green = fits, Red = does not fit\nL = Low (~7% recovery) · M = Medium (~15%) · Q = Quartile (~25%) · H = High (~30%)",
+			Left:     "left",
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
+		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(false)}),
 		charts.WithXAxisOpts(opts.XAxis{
 			Type:      "category",
 			Data:      toInterfaceSlice(ecLevels),
@@ -219,13 +226,13 @@ func barcodeHeatmapChart(datasets, ecLevels []string, cells []HeatmapCell) *char
 			Show: opts.Bool(false),
 		}),
 		charts.WithInitializationOpts(opts.Initialization{
-			Width:  "700px",
+			Width:  "1100px",
 			Height: "400px",
 		}),
 		charts.WithGridOpts(opts.Grid{
-			Top:    "50px",
+			Top:    "80px",
 			Left:   "120px",
-			Right:  "60px",
+			Right:  "500px",
 			Bottom: "60px",
 		}),
 	)
@@ -252,6 +259,69 @@ func barcodeHeatmapChart(datasets, ecLevels []string, cells []HeatmapCell) *char
 	}
 
 	hm.SetXAxis(ecLevels)
+	hm.AddSeries("Feasibility", items)
+
+	return hm
+}
+
+func datamatrixHeatmapChart(datasets []string, cells []HeatmapCell) *charts.HeatMap {
+	hm := charts.NewHeatMap()
+	hm.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title:    "DataMatrix Feasibility",
+			Subtitle: "Green = fits, Red = does not fit",
+			Left:     "left",
+		}),
+		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
+		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(false)}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Type:      "category",
+			Data:      []interface{}{"ECC200"},
+			SplitArea: &opts.SplitArea{Show: opts.Bool(true)},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Type:      "category",
+			Data:      toInterfaceSlice(datasets),
+			SplitArea: &opts.SplitArea{Show: opts.Bool(true)},
+		}),
+		charts.WithVisualMapOpts(opts.VisualMap{
+			Calculable: opts.Bool(false),
+			Min:        0,
+			Max:        1,
+			InRange: &opts.VisualMapInRange{
+				Color: []string{"#e74c3c", "#2ecc71"},
+			},
+			Show: opts.Bool(false),
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Width:  "1100px",
+			Height: "400px",
+		}),
+		charts.WithGridOpts(opts.Grid{
+			Top:    "70px",
+			Left:   "120px",
+			Right:  "700px",
+			Bottom: "60px",
+		}),
+	)
+
+	dsIdx := map[string]int{}
+	for i, ds := range datasets {
+		dsIdx[ds] = i
+	}
+
+	items := make([]opts.HeatMapData, len(cells))
+	for i, c := range cells {
+		val := 0
+		if c.Fits {
+			val = 1
+		}
+		items[i] = opts.HeatMapData{
+			Value: [3]interface{}{0, dsIdx[c.Dataset], val},
+		}
+	}
+
+	hm.SetXAxis([]string{"ECC200"})
 	hm.AddSeries("Feasibility", items)
 
 	return hm

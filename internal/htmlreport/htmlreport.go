@@ -53,7 +53,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 {{if .Summary}}
 <div class="summary">
   <h2>Summary</h2>
+  {{if .Summary.BestRatio}}
+  <h3 style="margin:12px 0 8px;font-size:15px;color:#91cc75;">Best Compression Ratio</h3>
+  <div class="sweet-spots">
+    {{range .Summary.BestRatio}}
+    <div class="spot" style="background:#1a3a5c;">
+      <div class="ds">{{.Dataset}}</div>
+      <div class="cfg">{{.Algorithm}} L{{.Level}} ({{.InputType}}){{if .UseDict}} +dict{{end}} — ratio {{printf "%.2f" .Ratio}}x, {{.EncodeUs}}µs</div>
+    </div>
+    {{end}}
+  </div>
+  {{end}}
   {{if .Summary.SweetSpot}}
+  <h3 style="margin:12px 0 8px;font-size:15px;color:#fac858;">Sweet Spot <span style="font-weight:400;font-size:12px;color:#aaa;">(best ratio improvement per µs of encode time)</span></h3>
   <div class="sweet-spots">
     {{range .Summary.SweetSpot}}
     <div class="spot">
@@ -112,10 +124,16 @@ func Generate(rpt *report.Report, w io.Writer) error {
 		page.AddCharts(dictImpactChart(dictPairs))
 	}
 
-	// 5. Barcode heatmap.
+	// 5. QR barcode heatmap.
 	datasets, ecLevels, cells := BarcodeHeatmap(rpt.Results)
 	if len(cells) > 0 {
 		page.AddCharts(barcodeHeatmapChart(datasets, ecLevels, cells))
+	}
+
+	// 6. DataMatrix heatmap.
+	dmDatasets, dmCells := DataMatrixHeatmap(rpt.Results)
+	if len(dmCells) > 0 {
+		page.AddCharts(datamatrixHeatmapChart(dmDatasets, dmCells))
 	}
 
 	// Render go-echarts page to buffer.

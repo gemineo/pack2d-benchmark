@@ -242,6 +242,55 @@ func TestBarcodeHeatmap_IgnoresNonQR(t *testing.T) {
 	assert.Empty(t, cells)
 }
 
+func TestDataMatrixHeatmap(t *testing.T) {
+	results := []runner.Result{
+		makeBarcodeResult("small", "zstd", 3, 100, []runner.BarcodeCheck{
+			{BarcodeType: "datamatrix", ECLevel: "ECC200", Fits: true},
+		}),
+		makeBarcodeResult("large", "zstd", 3, 500, []runner.BarcodeCheck{
+			{BarcodeType: "datamatrix", ECLevel: "ECC200", Fits: false},
+		}),
+		// Better config for large (smaller encoded) — should replace above.
+		makeBarcodeResult("large", "brotli", 6, 300, []runner.BarcodeCheck{
+			{BarcodeType: "datamatrix", ECLevel: "ECC200", Fits: true},
+		}),
+	}
+
+	datasets, cells := DataMatrixHeatmap(results)
+
+	assert.Equal(t, []string{"large", "small"}, datasets)
+	require.Len(t, cells, 2)
+
+	cellMap := map[string]HeatmapCell{}
+	for _, c := range cells {
+		cellMap[c.Dataset] = c
+	}
+
+	// large uses brotli result (encoded=300 < 500).
+	assert.True(t, cellMap["large"].Fits)
+	assert.Equal(t, "ECC200", cellMap["large"].ECLevel)
+
+	assert.True(t, cellMap["small"].Fits)
+}
+
+func TestDataMatrixHeatmap_Empty(t *testing.T) {
+	datasets, cells := DataMatrixHeatmap(nil)
+	assert.Empty(t, datasets)
+	assert.Empty(t, cells)
+}
+
+func TestDataMatrixHeatmap_IgnoresQR(t *testing.T) {
+	results := []runner.Result{
+		makeBarcodeResult("ds1", "zstd", 3, 100, []runner.BarcodeCheck{
+			{BarcodeType: "qr", ECLevel: "L", Fits: true, QRVersion: 5},
+		}),
+	}
+
+	datasets, cells := DataMatrixHeatmap(results)
+	assert.Empty(t, datasets)
+	assert.Empty(t, cells)
+}
+
 func TestBarcodeHeatmap_AcceptsQRCodeType(t *testing.T) {
 	results := []runner.Result{
 		makeBarcodeResult("ds1", "zstd", 3, 100, []runner.BarcodeCheck{

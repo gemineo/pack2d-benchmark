@@ -280,6 +280,52 @@ func BarcodeHeatmap(results []runner.Result) (datasets []string, ecLevels []stri
 	return datasets, ecLevels, cells
 }
 
+// DataMatrixHeatmap returns datasets and cells for the DataMatrix feasibility heatmap.
+// DataMatrix uses a single EC level (ECC200), so the result is a single-column heatmap.
+func DataMatrixHeatmap(results []runner.Result) (datasets []string, cells []HeatmapCell) {
+	type bestVal struct {
+		fits    bool
+		encoded int
+	}
+
+	best := map[string]bestVal{} // dataset → best
+	datasetSet := map[string]struct{}{}
+
+	for _, r := range results {
+		if r.Barcode == nil {
+			continue
+		}
+		for _, chk := range r.Barcode.Checks {
+			if chk.BarcodeType != "datamatrix" {
+				continue
+			}
+			datasetSet[r.Dataset] = struct{}{}
+
+			existing, ok := best[r.Dataset]
+			if !ok || r.Encoded < existing.encoded {
+				best[r.Dataset] = bestVal{
+					fits:    chk.Fits,
+					encoded: r.Encoded,
+				}
+			}
+		}
+	}
+
+	datasets = sortedKeys(datasetSet)
+
+	for _, ds := range datasets {
+		if v, ok := best[ds]; ok {
+			cells = append(cells, HeatmapCell{
+				Dataset: ds,
+				ECLevel: "ECC200",
+				Fits:    v.fits,
+			})
+		}
+	}
+
+	return datasets, cells
+}
+
 // Datasets returns the unique sorted dataset names from results.
 func Datasets(results []runner.Result) []string {
 	set := map[string]struct{}{}
