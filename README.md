@@ -1,1 +1,84 @@
 # pack2d-benchmark
+
+Benchmarking CLI for evaluating [pack2d](https://github.com/gemineo/pack2d) compression configurations, barcode feasibility, and performance trade-offs.
+
+## Installation
+
+```bash
+task build
+```
+
+Requires Go 1.26+ and the `pack2d` repository as a sibling directory.
+
+## Quick Start
+
+```bash
+# Run full benchmark suite with embedded datasets
+./bin/pack2d-benchmark run
+
+# Quick check with fewer iterations
+./bin/pack2d-benchmark run --iterations 5 --warm-up 1
+
+# Focus on a specific algorithm
+./bin/pack2d-benchmark run --scenarios compression --algorithms zstd
+
+# Export results as JSON
+./bin/pack2d-benchmark run --export results.json
+```
+
+## Commands
+
+### `run`
+
+Execute benchmark scenarios against datasets.
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--scenarios` | `compression,barcode` | Comma-separated scenarios to run |
+| `--algorithms` | `zlib,zstd,brotli` | Compression algorithms to benchmark |
+| `--iterations` | `20` | Number of measured iterations |
+| `--warm-up` | `3` | Warm-up iterations (discarded) |
+| `--input-types` | `raw,json` | Serialization input types |
+| `--data` | _(embedded)_ | Custom dataset directory |
+| `--export` | | Export JSON report to file |
+| `--output` | _(stdout)_ | Write ASCII output to file |
+| `--quiet` | `false` | Suppress progress spinner |
+| `--no-color` | `false` | Disable colored output |
+
+### `datasets`
+
+List all embedded test datasets with sizes and descriptions.
+
+### `version`
+
+Print tool version, Go version, and OS/architecture.
+
+## Embedded Datasets
+
+| Name | Type | Size | Description |
+|------|------|------|-------------|
+| tiny-json | json | 36 B | Minimal JSON object |
+| small-json | json | ~540 B | User profile with nested objects |
+| medium-json | json | ~4.6 KB | Product catalog (5 products) |
+| large-json | json | ~42 KB | Array of 100 user records |
+| repetitive-json | json | ~21 KB | 100 identical objects (compression best-case) |
+| high-entropy | binary | 2 KB | PRNG output seed=42 (compression worst-case) |
+
+## Scenarios
+
+**compression** — Benchmarks all algorithm x level x input-type combinations per dataset. Reports encode/decode timing, compression ratio, and QR code feasibility.
+
+**barcode** — Finds the best compression config per dataset for barcode use. Shows QR code (L/M/Q/H) and DataMatrix feasibility with PASS/FAIL.
+
+## Development
+
+```bash
+task test       # Run tests with race detector
+task lint       # Run golangci-lint
+task fmt        # Format source files
+task ci         # Full CI pipeline
+```
+
+## License
+
+See [LICENSE](LICENSE).

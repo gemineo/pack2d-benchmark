@@ -1,0 +1,1202 @@
+[
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  },
+  {
+    "location": {
+      "building": "A",
+      "floor": 3,
+      "room": "301"
+    },
+    "sensor": "temp-001",
+    "status": "normal",
+    "type": "measurement",
+    "unit": "celsius",
+    "value": 23.5
+  }
+]

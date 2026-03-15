@@ -1,0 +1,126 @@
+{
+  "catalog": {
+    "id": "cat_2024Q4",
+    "name": "Winter Collection 2024",
+    "description": "Premium winter clothing and accessories for the discerning customer. Features sustainable materials and modern designs.",
+    "currency": "EUR",
+    "lastUpdated": "2024-12-01T00:00:00Z"
+  },
+  "products": [
+    {
+      "sku": "WJ-001-BLK-M",
+      "name": "Alpine Down Jacket",
+      "category": "outerwear",
+      "description": "Lightweight 800-fill down jacket with water-resistant shell. Perfect for cold weather commuting and weekend adventures.",
+      "price": 289.99,
+      "compareAtPrice": 349.99,
+      "currency": "EUR",
+      "inStock": true,
+      "quantity": 142,
+      "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "Black", "hex": "#1a1a1a"},
+        {"name": "Navy", "hex": "#1b2a4a"},
+        {"name": "Forest", "hex": "#2d4a2d"}
+      ],
+      "materials": ["90% recycled down", "10% feathers", "nylon ripstop shell"],
+      "weight": {"value": 420, "unit": "g"},
+      "ratings": {"average": 4.7, "count": 238},
+      "tags": ["bestseller", "sustainable", "lightweight", "packable"]
+    },
+    {
+      "sku": "WS-012-GRY-L",
+      "name": "Merino Wool Sweater",
+      "category": "knitwear",
+      "description": "Extra-fine merino wool crew neck sweater. Temperature-regulating and naturally odor-resistant for all-day comfort.",
+      "price": 129.99,
+      "compareAtPrice": null,
+      "currency": "EUR",
+      "inStock": true,
+      "quantity": 87,
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": [
+        {"name": "Heather Grey", "hex": "#9e9e9e"},
+        {"name": "Burgundy", "hex": "#722f37"},
+        {"name": "Camel", "hex": "#c19a6b"},
+        {"name": "Charcoal", "hex": "#36454f"}
+      ],
+      "materials": ["100% extra-fine merino wool (18.5 micron)"],
+      "weight": {"value": 310, "unit": "g"},
+      "ratings": {"average": 4.5, "count": 156},
+      "tags": ["classic", "merino", "temperature-regulating"]
+    },
+    {
+      "sku": "WB-007-TAN-42",
+      "name": "Chelsea Leather Boot",
+      "category": "footwear",
+      "description": "Full-grain leather Chelsea boot with Goodyear welt construction. Leather-lined interior with cushioned insole for superior comfort.",
+      "price": 349.99,
+      "compareAtPrice": 399.99,
+      "currency": "EUR",
+      "inStock": true,
+      "quantity": 34,
+      "sizes": ["39", "40", "41", "42", "43", "44", "45", "46"],
+      "colors": [
+        {"name": "Tan", "hex": "#d2b48c"},
+        {"name": "Dark Brown", "hex": "#3b2f2f"},
+        {"name": "Black", "hex": "#1a1a1a"}
+      ],
+      "materials": ["full-grain leather upper", "leather lining", "rubber sole"],
+      "weight": {"value": 780, "unit": "g"},
+      "ratings": {"average": 4.8, "count": 89},
+      "tags": ["premium", "goodyear-welt", "classic"]
+    },
+    {
+      "sku": "WA-021-NVY-OS",
+      "name": "Cashmere Blend Scarf",
+      "category": "accessories",
+      "description": "Luxuriously soft cashmere-wool blend scarf. Generous proportions allow for multiple styling options.",
+      "price": 89.99,
+      "compareAtPrice": null,
+      "currency": "EUR",
+      "inStock": true,
+      "quantity": 210,
+      "sizes": ["one-size"],
+      "colors": [
+        {"name": "Navy", "hex": "#1b2a4a"},
+        {"name": "Oatmeal", "hex": "#d4c5a9"},
+        {"name": "Bordeaux", "hex": "#5c1a1a"},
+        {"name": "Sage", "hex": "#87ae73"},
+        {"name": "Slate", "hex": "#708090"}
+      ],
+      "materials": ["70% wool", "30% cashmere"],
+      "weight": {"value": 180, "unit": "g"},
+      "ratings": {"average": 4.6, "count": 312},
+      "tags": ["gift-idea", "cashmere", "versatile"]
+    },
+    {
+      "sku": "WP-005-OLV-32",
+      "name": "Technical Cargo Pant",
+      "category": "trousers",
+      "description": "Stretch-woven cargo pant with DWR coating. Features articulated knees and zippered cargo pockets for a clean silhouette.",
+      "price": 159.99,
+      "compareAtPrice": 189.99,
+      "currency": "EUR",
+      "inStock": false,
+      "quantity": 0,
+      "sizes": ["28", "30", "32", "34", "36", "38"],
+      "colors": [
+        {"name": "Olive", "hex": "#556b2f"},
+        {"name": "Black", "hex": "#1a1a1a"},
+        {"name": "Stone", "hex": "#928e85"}
+      ],
+      "materials": ["97% nylon", "3% elastane", "DWR finish"],
+      "weight": {"value": 340, "unit": "g"},
+      "ratings": {"average": 4.3, "count": 67},
+      "tags": ["technical", "water-resistant", "stretch"]
+    }
+  ],
+  "metadata": {
+    "totalProducts": 5,
+    "categories": ["outerwear", "knitwear", "footwear", "accessories", "trousers"],
+    "priceRange": {"min": 89.99, "max": 349.99},
+    "generatedAt": "2024-12-01T10:00:00Z",
+    "version": "1.0.0"
+  }
+}

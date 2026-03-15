@@ -1,0 +1,38 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - exhaustive
+    - gocritic
+    - revive
+    - wrapcheck
+
+linters-settings:
+  goimports:
+    local-prefixes: github.com/gemineo/pack2d-benchmark
+  revive:
+    rules:
+      - name: exported
+      - name: var-naming
+      - name: error-return
+      - name: error-strings
+  wrapcheck:
+    ignorePackageGlobs:
+      - github.com/gemineo/pack2d-benchmark/*
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - wrapcheck
+        - errcheck
