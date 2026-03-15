@@ -85,6 +85,62 @@ func compressionRatioChart(data RatioBarData) *charts.Bar {
 	return bar
 }
 
+func encodedSizeChart(data EncodedSizeBarData) *charts.Bar {
+	bar := charts.NewBar()
+	bar.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title:    "Smallest Encoded Size by Dataset",
+			Subtitle: "Lower is better · absolute payload size for barcode feasibility",
+		}),
+		charts.WithTooltipOpts(opts.Tooltip{
+			Show: opts.Bool(true),
+			Formatter: opts.FuncOpts(`function(params) {
+				var v = params.value;
+				if (v >= 1024) {
+					return params.seriesName + '<br/>' + params.name + ': ' + (v / 1024).toFixed(1) + ' KB';
+				}
+				return params.seriesName + '<br/>' + params.name + ': ' + v + ' B';
+			}`),
+		}),
+		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name:      "Dataset",
+			AxisLabel: &opts.AxisLabel{Interval: "0", Rotate: 30},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Name: "Encoded Size (bytes)",
+			AxisLabel: &opts.AxisLabel{
+				Formatter: opts.FuncOpts(`function(v) {
+					if (v >= 1024) return (v / 1024).toFixed(1) + ' KB';
+					return v + ' B';
+				}`),
+			},
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Width:  "1100px",
+			Height: "500px",
+		}),
+		gridWithPadding(),
+	)
+	bar.SetXAxis(data.Datasets)
+
+	algos := sortedKeys(toSet(keys(data.ByAlgo)))
+	for _, algo := range algos {
+		sizes := data.ByAlgo[algo]
+		items := make([]opts.BarData, len(sizes))
+		for j, s := range sizes {
+			items[j] = opts.BarData{Value: s}
+		}
+		barOpts := []charts.SeriesOpts{}
+		if c, ok := algoColors[algo]; ok {
+			barOpts = append(barOpts, charts.WithItemStyleOpts(opts.ItemStyle{Color: c}))
+		}
+		bar.AddSeries(algo, items, barOpts...)
+	}
+
+	return bar
+}
+
 var inputTypeColors = map[string]string{
 	"raw":  "#73c0de",
 	"json": "#ee6666",

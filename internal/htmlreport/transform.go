@@ -46,6 +46,52 @@ type HeatmapCell struct {
 	Version int
 }
 
+// EncodedSizeBarData holds smallest encoded size per algorithm per dataset.
+type EncodedSizeBarData struct {
+	Datasets []string
+	ByAlgo   map[string][]int // algo → smallest encoded bytes per dataset (same order as Datasets)
+}
+
+// SmallestEncodedSize returns the smallest absolute encoded size per algorithm per dataset.
+// This complements CompressionRatioByDataset: ratio rewards verbose inputs (like XML)
+// with a larger denominator, while encoded size shows the actual barcode payload.
+func SmallestEncodedSize(results []runner.Result) EncodedSizeBarData {
+	type key struct {
+		dataset string
+		algo    string
+	}
+
+	best := map[key]int{}
+	datasetSet := map[string]struct{}{}
+	algoSet := map[string]struct{}{}
+
+	for _, r := range results {
+		if r.Scenario != "compression" {
+			continue
+		}
+		k := key{r.Dataset, string(r.Algorithm)}
+		datasetSet[r.Dataset] = struct{}{}
+		algoSet[string(r.Algorithm)] = struct{}{}
+		if prev, ok := best[k]; !ok || r.Encoded < prev {
+			best[k] = r.Encoded
+		}
+	}
+
+	datasets := sortedKeys(datasetSet)
+	algos := sortedKeys(algoSet)
+
+	byAlgo := make(map[string][]int, len(algos))
+	for _, algo := range algos {
+		sizes := make([]int, len(datasets))
+		for i, ds := range datasets {
+			sizes[i] = best[key{ds, algo}]
+		}
+		byAlgo[algo] = sizes
+	}
+
+	return EncodedSizeBarData{Datasets: datasets, ByAlgo: byAlgo}
+}
+
 // CompressionRatioByDataset returns the best (lowest) compression ratio per algorithm per dataset.
 func CompressionRatioByDataset(results []runner.Result) RatioBarData {
 	type key struct {

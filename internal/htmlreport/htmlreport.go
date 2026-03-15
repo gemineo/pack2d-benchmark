@@ -102,19 +102,25 @@ func Generate(rpt *report.Report, w io.Writer) error {
 		page.AddCharts(compressionRatioChart(ratioData))
 	}
 
-	// 2. Serialization impact bar chart.
+	// 2. Smallest encoded size bar chart.
+	sizeData := SmallestEncodedSize(rpt.Results)
+	if len(sizeData.Datasets) > 0 {
+		page.AddCharts(encodedSizeChart(sizeData))
+	}
+
+	// 3. Serialization impact bar chart.
 	serData := SerializationImpact(rpt.Results)
 	if len(serData.Datasets) > 0 && len(serData.ByInputType) > 1 {
 		page.AddCharts(serializationImpactChart(serData))
 	}
 
-	// 3. Speed vs ratio scatter.
+	// 4. Speed vs ratio scatter.
 	scatter := SpeedVsRatio(rpt.Results)
 	if len(scatter) > 0 {
 		page.AddCharts(speedVsRatioChart(scatter))
 	}
 
-	// 4. Level sweep per dataset.
+	// 5. Level sweep per dataset.
 	for _, ds := range Datasets(rpt.Results) {
 		series := LevelSweep(rpt.Results, ds)
 		if len(series) > 0 {
@@ -122,19 +128,19 @@ func Generate(rpt *report.Report, w io.Writer) error {
 		}
 	}
 
-	// 5. Dictionary impact (only if dict results exist).
+	// 6. Dictionary impact (only if dict results exist).
 	dictPairs := DictImpact(rpt.Results)
 	if len(dictPairs) > 0 {
 		page.AddCharts(dictImpactChart(dictPairs))
 	}
 
-	// 6. QR barcode heatmap.
+	// 7. QR barcode heatmap.
 	datasets, ecLevels, cells := BarcodeHeatmap(rpt.Results)
 	if len(cells) > 0 {
 		page.AddCharts(barcodeHeatmapChart(datasets, ecLevels, cells))
 	}
 
-	// 7. DataMatrix heatmap.
+	// 8. DataMatrix heatmap.
 	dmDatasets, dmCells := DataMatrixHeatmap(rpt.Results)
 	if len(dmCells) > 0 {
 		page.AddCharts(datamatrixHeatmapChart(dmDatasets, dmCells))
