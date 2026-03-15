@@ -2,6 +2,7 @@ package runner
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/gemineo/pack2d"
@@ -9,6 +10,13 @@ import (
 	"github.com/gemineo/pack2d-benchmark/internal/config"
 	"github.com/gemineo/pack2d-benchmark/internal/dataset"
 )
+
+// Errors that indicate an incompatible dataset/input-type combination
+// rather than a real failure. These are silently skipped.
+var skippableErrors = []error{
+	pack2d.ErrUnknownSerializer,
+	pack2d.ErrInvalidEncoding,
+}
 
 // CompressionScenario benchmarks all algorithm×level×inputType combinations.
 type CompressionScenario struct{}
@@ -44,12 +52,15 @@ func (s *CompressionScenario) Run(ctx context.Context, datasets []dataset.Datase
 
 					encStats, encoded, p2dStats, err := MeasureEncode(ds.Data, opts, cfg.WarmUp, cfg.Iterations)
 					if err != nil {
-						continue // skip incompatible combinations (e.g., binary data with JSON input type)
+						if isSkippable(err) {
+							continue
+						}
+						return nil, fmt.Errorf("compression encode %s/%s/L%d/%s: %w", ds.Name, algo, level, inputType, err)
 					}
 
 					decStats, err := MeasureDecode(encoded, opts, cfg.WarmUp, cfg.Iterations)
 					if err != nil {
-						continue
+						return nil, fmt.Errorf("compression decode %s/%s/L%d/%s: %w", ds.Name, algo, level, inputType, err)
 					}
 
 					// Barcode feasibility checks.
@@ -120,4 +131,13 @@ func makeBarcodeChecks(encodedLen int) []BarcodeCheck {
 	})
 
 	return checks
+}
+
+func isSkippable(err error) bool {
+	for _, target := range skippableErrors {
+		if errors.Is(err, target) {
+			return true
+		}
+	}
+	return false
 }
