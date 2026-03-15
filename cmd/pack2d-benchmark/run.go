@@ -35,7 +35,7 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 		Use:   "run",
 		Short: "Run benchmarks",
 		Long:  "Execute benchmark scenarios against embedded or custom datasets.",
-		RunE: func(cmd *cobra.Command, _ []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) (retErr error) {
 			cfg := config.DefaultConfig()
 			cfg.Quiet = *quiet
 			cfg.NoColor = *noColor
@@ -114,6 +114,11 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 			if !cfg.Quiet {
 				sp = spinner.New(spinner.CharSets[14], 100*time.Millisecond, spinner.WithWriter(os.Stderr))
 				sp.Prefix = " "
+				defer func() {
+					if sp.Active() {
+						sp.Stop()
+					}
+				}()
 				r.SetProgressFunc(func(scenario, ds, detail string) {
 					sp.Suffix = fmt.Sprintf(" [%s] %s — %s", scenario, ds, detail)
 					if !sp.Active() {
@@ -130,14 +135,7 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 
 			results, err := r.Run(ctx)
 			if err != nil {
-				if sp != nil && sp.Active() {
-					sp.Stop()
-				}
 				return err
-			}
-
-			if sp != nil && sp.Active() {
-				sp.Stop()
 			}
 
 			// Build report.
@@ -150,7 +148,11 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 				if openErr != nil {
 					return fmt.Errorf("create output file: %w", openErr)
 				}
-				defer f.Close()
+				defer func() {
+					if closeErr := f.Close(); closeErr != nil && retErr == nil {
+						retErr = fmt.Errorf("close output file: %w", closeErr)
+					}
+				}()
 				out = f
 			}
 
@@ -164,7 +166,11 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 				if openErr != nil {
 					return fmt.Errorf("create export file: %w", openErr)
 				}
-				defer f.Close()
+				defer func() {
+					if closeErr := f.Close(); closeErr != nil && retErr == nil {
+						retErr = fmt.Errorf("close export file: %w", closeErr)
+					}
+				}()
 				if err := report.ExportJSON(f, rpt); err != nil {
 					return fmt.Errorf("export JSON: %w", err)
 				}

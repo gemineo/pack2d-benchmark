@@ -66,9 +66,13 @@ Print tool version, Go version, and OS/architecture.
 
 ## Scenarios
 
-**compression** — Benchmarks all algorithm x level x input-type combinations per dataset. Reports encode/decode timing, compression ratio, and QR code feasibility.
+**compression** — Benchmarks all algorithm x level x input-type combinations per dataset. Reports encode/decode timing, compression ratio, and QR code feasibility. Incompatible input types (e.g., binary data with JSON serialization) are silently skipped.
 
-**barcode** — Finds the best compression config per dataset for barcode use. Shows QR code (L/M/Q/H) and DataMatrix feasibility with PASS/FAIL.
+**barcode** — Finds the best compression config per dataset for barcode use. Shows QR code (L/M/Q/H) and DataMatrix feasibility with PASS/FAIL. Incompatible input types are skipped; real errors are propagated.
+
+### Sweet-Spot Recommendations
+
+The summary identifies a "sweet spot" config per dataset — the last configuration where marginal ratio improvement exceeds 0.05% per microsecond of additional encode time. When no configuration meets this threshold, the recommendation falls back to the fastest config and the label indicates that no sweet spot was found.
 
 ## Development
 

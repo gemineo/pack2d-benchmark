@@ -34,7 +34,6 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 		var bestAlgo pack2d.CompressionType
 		var bestLevel int
 		var bestInputType pack2d.InputType
-		var bestEncoded string
 		var bestStats pack2d.Stats
 		var bestEncTiming TimingStats
 		var bestDecTiming TimingStats
@@ -55,7 +54,10 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 
 					encTiming, encoded, stats, err := MeasureEncode(ds.Data, opts, cfg.WarmUp, cfg.Iterations)
 					if err != nil {
-						continue // skip failing configs
+						if isSkippable(err) {
+							continue
+						}
+						return nil, fmt.Errorf("barcode encode %s/%s/L%d/%s: %w", ds.Name, algo, level, inputType, err)
 					}
 
 					if len(encoded) < bestLen {
@@ -63,7 +65,6 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 						bestAlgo = algo
 						bestLevel = level
 						bestInputType = inputType
-						bestEncoded = encoded
 						bestStats = stats
 						bestEncTiming = encTiming
 
@@ -80,7 +81,6 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 			continue // no valid config found
 		}
 
-		_ = bestEncoded
 		checks := makeBarcodeChecks(bestLen)
 
 		results = append(results, Result{

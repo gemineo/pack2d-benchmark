@@ -15,7 +15,10 @@ import (
 
 // RenderASCII writes the report as formatted ASCII tables.
 func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
+	// Save and restore global color state to avoid side effects.
+	prevNoColor := color.NoColor
 	color.NoColor = noColor
+	defer func() { color.NoColor = prevNoColor }()
 
 	headerColor := color.New(color.FgCyan, color.Bold)
 	passColor := color.New(color.FgGreen)
