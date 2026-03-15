@@ -22,19 +22,20 @@ type ProgressFunc func(scenario, dataset, detail string)
 
 // Result holds the outcome of a single benchmark measurement.
 type Result struct {
-	Scenario    string              `json:"scenario"`
-	Dataset     string              `json:"dataset"`
-	DatasetSize int                 `json:"datasetSize"`
+	Scenario    string                 `json:"scenario"`
+	Dataset     string                 `json:"dataset"`
+	DatasetSize int                    `json:"datasetSize"`
 	Algorithm   pack2d.CompressionType `json:"algorithm"`
-	Level       int                 `json:"level"`
-	InputType   pack2d.InputType    `json:"inputType"`
-	InputBytes  int                 `json:"inputBytes"`
-	Compressed  int                 `json:"compressedBytes"`
-	Encoded     int                 `json:"encodedBytes"`
-	Ratio       float64             `json:"compressionRatio"`
-	Encode      TimingStats         `json:"encodeTiming"`
-	Decode      TimingStats         `json:"decodeTiming"`
-	Barcode     *BarcodeResult      `json:"barcode,omitempty"`
+	Level       int                    `json:"level"`
+	InputType   pack2d.InputType       `json:"inputType"`
+	UseDict     bool                   `json:"useDict,omitempty"`
+	InputBytes  int                    `json:"inputBytes"`
+	Compressed  int                    `json:"compressedBytes"`
+	Encoded     int                    `json:"encodedBytes"`
+	Ratio       float64                `json:"compressionRatio"`
+	Encode      TimingStats            `json:"encodeTiming"`
+	Decode      TimingStats            `json:"decodeTiming"`
+	Barcode     *BarcodeResult         `json:"barcode,omitempty"`
 }
 
 // TimingStats holds timing statistics from repeated measurements.

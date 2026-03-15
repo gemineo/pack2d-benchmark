@@ -2,13 +2,23 @@ package config
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/gemineo/pack2d"
+	"github.com/gemineo/pack2d/dict"
 )
 
 // DefaultLevels defines the default compression levels to benchmark per algorithm.
+// Full ranges for comprehensive benchmarking.
 var DefaultLevels = map[pack2d.CompressionType][]int{
+	pack2d.Zlib:   {1, 2, 3, 4, 5, 6, 7, 8, 9},
+	pack2d.Zstd:   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
+	pack2d.Brotli: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
+}
+
+// QuickLevels defines a reduced set of levels for fast runs.
+var QuickLevels = map[pack2d.CompressionType][]int{
 	pack2d.Zlib:   {1, 6, 9},
 	pack2d.Zstd:   {1, 9, 19},
 	pack2d.Brotli: {1, 6, 11},
@@ -26,9 +36,10 @@ type Config struct {
 	InputTypes []pack2d.InputType
 	Iterations int
 	WarmUp     int
-	DictPath   string
-	Quiet      bool
-	NoColor    bool
+	DictPath string
+	Dict     *dict.Dictionary
+	Quiet    bool
+	NoColor  bool
 }
 
 // DefaultConfig returns a Config with sensible defaults.
@@ -115,6 +126,35 @@ func ParseInputTypes(s string) ([]pack2d.InputType, error) {
 		default:
 			return nil, fmt.Errorf("parse input types: unknown input type %q", p)
 		}
+	}
+	return result, nil
+}
+
+// ParseLevels parses a comma-separated string of compression levels.
+// The resulting levels are applied uniformly to all algorithms.
+func ParseLevels(s string, algorithms []pack2d.CompressionType) (map[pack2d.CompressionType][]int, error) {
+	parts := strings.Split(s, ",")
+	var levels []int
+	for _, p := range parts {
+		p = strings.TrimSpace(p)
+		if p == "" {
+			continue
+		}
+		n, err := strconv.Atoi(p)
+		if err != nil {
+			return nil, fmt.Errorf("parse levels: invalid level %q: %w", p, err)
+		}
+		if n < 0 || n > 19 {
+			return nil, fmt.Errorf("parse levels: level %d out of range [0, 19]", n)
+		}
+		levels = append(levels, n)
+	}
+	if len(levels) == 0 {
+		return nil, fmt.Errorf("parse levels: no valid levels provided")
+	}
+	result := make(map[pack2d.CompressionType][]int, len(algorithms))
+	for _, a := range algorithms {
+		result[a] = levels
 	}
 	return result, nil
 }

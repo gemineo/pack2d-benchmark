@@ -38,6 +38,7 @@ func ComputeSummary(results []runner.Result) *Summary {
 			Algorithm: string(bestRatio.Algorithm),
 			Level:     bestRatio.Level,
 			InputType: string(bestRatio.InputType),
+			UseDict:   bestRatio.UseDict,
 			Ratio:     bestRatio.Ratio,
 			EncodeUs:  bestRatio.Encode.Mean.Microseconds(),
 		})
@@ -54,6 +55,7 @@ func ComputeSummary(results []runner.Result) *Summary {
 			Algorithm: string(bestSpeed.Algorithm),
 			Level:     bestSpeed.Level,
 			InputType: string(bestSpeed.InputType),
+			UseDict:   bestSpeed.UseDict,
 			Ratio:     bestSpeed.Ratio,
 			EncodeUs:  bestSpeed.Encode.Mean.Microseconds(),
 		})
@@ -90,6 +92,7 @@ func ComputeSummary(results []runner.Result) *Summary {
 			Algorithm: string(sweet.Algorithm),
 			Level:     sweet.Level,
 			InputType: string(sweet.InputType),
+			UseDict:   sweet.UseDict,
 			Ratio:     sweet.Ratio,
 			EncodeUs:  sweet.Encode.Mean.Microseconds(),
 			Found:     sweetFound,
@@ -128,8 +131,12 @@ func generateRecommendations(s *Summary) []string {
 		if !ss.Found {
 			label = "Fastest (no sweet spot found)"
 		}
-		recs = append(recs, fmt.Sprintf("[%s] %s: %s/L%d/%s (ratio: %.2fx, encode: %dµs)",
-			ss.Dataset, label, ss.Algorithm, ss.Level, ss.InputType, ss.Ratio, ss.EncodeUs))
+		dictSuffix := ""
+		if ss.UseDict {
+			dictSuffix = "+dict"
+		}
+		recs = append(recs, fmt.Sprintf("[%s] %s: %s/L%d/%s%s (ratio: %.2fx, encode: %dµs)",
+			ss.Dataset, label, ss.Algorithm, ss.Level, ss.InputType, dictSuffix, ss.Ratio, ss.EncodeUs))
 	}
 
 	if len(s.QRFitCounts) > 0 {

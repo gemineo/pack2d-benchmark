@@ -8,6 +8,7 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/gemineo/pack2d"
+	"github.com/gemineo/pack2d/dict"
 	"github.com/spf13/cobra"
 
 	"github.com/gemineo/pack2d-benchmark/internal/config"
@@ -80,7 +81,13 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 				cfg.InputTypes = parsed
 			}
 
-			_ = levels // custom levels parsing deferred to Phase 2
+			if levels != "" {
+				parsed, err := config.ParseLevels(levels, cfg.Algorithms)
+				if err != nil {
+					return err
+				}
+				cfg.Levels = parsed
+			}
 
 			if err := cfg.Validate(); err != nil {
 				return err
@@ -104,6 +111,15 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 
 			if len(datasets) == 0 {
 				return fmt.Errorf("no datasets found")
+			}
+
+			// Load or auto-train dictionary.
+			if cfg.DictPath != "" {
+				d, err := loadOrTrainDict(cfg.DictPath, datasets)
+				if err != nil {
+					return err
+				}
+				cfg.Dict = d
 			}
 
 			// Setup runner.
@@ -186,11 +202,54 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 	cmd.Flags().StringVar(&export, "export", "", "Export results as JSON to file")
 	cmd.Flags().StringVar(&scenarios, "scenarios", "", "Comma-separated scenarios (compression,barcode)")
 	cmd.Flags().StringVar(&algorithms, "algorithms", "", "Comma-separated algorithms (zlib,zstd,brotli)")
-	cmd.Flags().StringVar(&levels, "levels", "", "Comma-separated compression levels (deferred)")
+	cmd.Flags().StringVar(&levels, "levels", "", "Comma-separated compression levels")
 	cmd.Flags().IntVar(&iterations, "iterations", 20, "Number of benchmark iterations")
 	cmd.Flags().StringVar(&inputTypes, "input-types", "", "Comma-separated input types (raw,json)")
 	cmd.Flags().IntVar(&warmUp, "warm-up", 3, "Number of warm-up iterations")
-	cmd.Flags().StringVar(&dictPath, "dict", "", "Path to zstd dictionary file")
+	cmd.Flags().StringVar(&dictPath, "dict", "", "Path to zstd dictionary file, or \"auto\" to train from datasets")
 
 	return cmd
+}
+
+// loadOrTrainDict loads a dictionary from file or auto-trains one from datasets.
+func loadOrTrainDict(path string, datasets []dataset.Dataset) (*dict.Dictionary, error) {
+	if path == "auto" {
+		return trainDictFromDatasets(datasets)
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("load dictionary: %w", err)
+	}
+
+	return &dict.Dictionary{
+		ID:   1,
+		Name: "user-provided",
+		Data: data,
+	}, nil
+}
+
+// trainDictFromDatasets trains a zstd dictionary from all available datasets.
+func trainDictFromDatasets(datasets []dataset.Dataset) (*dict.Dictionary, error) {
+	var samples [][]byte
+	for _, ds := range datasets {
+		if len(ds.Data) > 0 {
+			samples = append(samples, ds.Data)
+		}
+	}
+	if len(samples) == 0 {
+		return nil, fmt.Errorf("train dictionary: no samples available")
+	}
+
+	dictData, err := dict.Train(samples, "zstd")
+	if err != nil {
+		return nil, fmt.Errorf("train dictionary: %w", err)
+	}
+
+	return &dict.Dictionary{
+		ID:          1,
+		Name:        "auto-trained",
+		Data:        dictData,
+		SampleCount: len(samples),
+	}, nil
 }

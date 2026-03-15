@@ -55,6 +55,7 @@ type SweetSpotEntry struct {
 	Algorithm string  `json:"algorithm"`
 	Level     int     `json:"level"`
 	InputType string  `json:"inputType"`
+	UseDict   bool    `json:"useDict,omitempty"`
 	Ratio     float64 `json:"ratio"`
 	EncodeUs  int64   `json:"encodeUs"`
 	Found     bool    `json:"found"`
@@ -66,6 +67,7 @@ type BestEntry struct {
 	Algorithm string  `json:"algorithm"`
 	Level     int     `json:"level"`
 	InputType string  `json:"inputType"`
+	UseDict   bool    `json:"useDict,omitempty"`
 	Ratio     float64 `json:"ratio"`
 	EncodeUs  int64   `json:"encodeUs"`
 }

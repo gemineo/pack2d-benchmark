@@ -22,8 +22,14 @@ Requires Go 1.26+ and the `pack2d` repository as a sibling directory.
 # Focus on a specific algorithm
 ./bin/pack2d-benchmark run --scenarios compression --algorithms zstd
 
+# Run with zstd dictionary auto-trained from datasets
+./bin/pack2d-benchmark run --dict auto
+
+# Specify custom compression levels
+./bin/pack2d-benchmark run --levels 1,5,9
+
 # Export results as JSON
-./bin/pack2d-benchmark run --export results.json
+./bin/pack2d-benchmark run --export output/results.json
 ```
 
 ## Commands
@@ -36,9 +42,11 @@ Execute benchmark scenarios against datasets.
 |------|---------|-------------|
 | `--scenarios` | `compression,barcode` | Comma-separated scenarios to run |
 | `--algorithms` | `zlib,zstd,brotli` | Compression algorithms to benchmark |
+| `--levels` | _(all)_ | Comma-separated compression levels (applied to all algorithms) |
 | `--iterations` | `20` | Number of measured iterations |
 | `--warm-up` | `3` | Warm-up iterations (discarded) |
 | `--input-types` | `raw,json` | Serialization input types |
+| `--dict` | | Path to zstd dictionary file, or `auto` to train from datasets |
 | `--data` | _(embedded)_ | Custom dataset directory |
 | `--export` | | Export JSON report to file |
 | `--output` | _(stdout)_ | Write ASCII output to file |
@@ -66,9 +74,9 @@ Print tool version, Go version, and OS/architecture.
 
 ## Scenarios
 
-**compression** — Benchmarks all algorithm x level x input-type combinations per dataset. Reports encode/decode timing, compression ratio, and QR code feasibility. Incompatible input types (e.g., binary data with JSON serialization) are silently skipped.
+**compression** — Benchmarks all algorithm x level x input-type combinations per dataset. By default covers the full level range for each algorithm (zlib 1–9, zstd 1–19, brotli 0–11). When `--dict` is provided, zstd configurations are additionally benchmarked with dictionary compression. Reports encode/decode timing, compression ratio, and QR code feasibility. Incompatible input types (e.g., binary data with JSON serialization) are silently skipped.
 
-**barcode** — Finds the best compression config per dataset for barcode use. Shows QR code (L/M/Q/H) and DataMatrix feasibility with PASS/FAIL. Incompatible input types are skipped; real errors are propagated.
+**barcode** — Finds the best compression config per dataset for barcode use, including dictionary variants when `--dict` is provided. Shows QR code (L/M/Q/H) and DataMatrix feasibility with PASS/FAIL. Incompatible input types are skipped; real errors are propagated.
 
 ### Sweet-Spot Recommendations
 
