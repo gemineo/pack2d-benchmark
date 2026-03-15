@@ -23,6 +23,11 @@ var metadataRegistry = map[string]datasetMeta{
 	"json/medium-json.json":        {Type: "json", Description: "Product catalog with 5 products, nested arrays/objects"},
 	"json/large-json.json":         {Type: "json", Description: "Array of 100 user records with addresses"},
 	"json/repetitive-json.json":    {Type: "json", Description: "100 identical sensor measurements (compression best-case)"},
+	"xml/tiny-xml.xml":             {Type: "xml", Description: "Minimal XML element (3 attributes)"},
+	"xml/small-xml.xml":            {Type: "xml", Description: "User profile in XML with nested elements"},
+	"xml/medium-xml.xml":           {Type: "xml", Description: "Product catalog in XML (5 products)"},
+	"xml/large-xml.xml":            {Type: "xml", Description: "100 user records in XML"},
+	"xml/repetitive-xml.xml":       {Type: "xml", Description: "100 identical sensor measurements in XML (compression best-case)"},
 	"adversarial/high-entropy.bin": {Type: "binary", Description: "Seeded PRNG output (seed=42, compression worst-case)"},
 }
 

@@ -38,7 +38,7 @@ func gridWithPadding() charts.GlobalOpts {
 		Top:    "80px",
 		Left:   "80px",
 		Right:  "120px",
-		Bottom: "60px",
+		Bottom: "100px",
 	})
 }
 
@@ -51,11 +51,14 @@ func compressionRatioChart(data RatioBarData) *charts.Bar {
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
-		charts.WithXAxisOpts(opts.XAxis{Name: "Dataset"}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name:      "Dataset",
+			AxisLabel: &opts.AxisLabel{Interval: "0", Rotate: 30},
+		}),
 		charts.WithYAxisOpts(opts.YAxis{Name: "Ratio"}),
 		charts.WithInitializationOpts(opts.Initialization{
 			Width:  "1100px",
-			Height: "450px",
+			Height: "500px",
 		}),
 		gridWithPadding(),
 	)
@@ -98,11 +101,14 @@ func serializationImpactChart(data SerializationBarData) *charts.Bar {
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
-		charts.WithXAxisOpts(opts.XAxis{Name: "Dataset"}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name:      "Dataset",
+			AxisLabel: &opts.AxisLabel{Interval: "0", Rotate: 30},
+		}),
 		charts.WithYAxisOpts(opts.YAxis{Name: "Ratio"}),
 		charts.WithInitializationOpts(opts.Initialization{
 			Width:  "1100px",
-			Height: "450px",
+			Height: "500px",
 		}),
 		gridWithPadding(),
 	)
@@ -138,6 +144,13 @@ func speedVsRatioChart(points []ScatterPoint) *charts.Scatter {
 		charts.WithTooltipOpts(opts.Tooltip{
 			Show:    opts.Bool(true),
 			Trigger: "item",
+			Formatter: opts.FuncOpts(`function(params) {
+				var v = params.value;
+				return '<b>' + v[2] + '</b><br/>' +
+					v[3] + '<br/>' +
+					'Encode: ' + v[0] + ' µs<br/>' +
+					'Ratio: ' + v[1].toFixed(3);
+			}`),
 		}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
 		charts.WithXAxisOpts(opts.XAxis{Name: "Encode Time (µs)", Type: "log"}),
@@ -149,11 +162,11 @@ func speedVsRatioChart(points []ScatterPoint) *charts.Scatter {
 		gridWithPadding(),
 	)
 
-	// Group by algorithm.
+	// Group by algorithm. Value dimensions: [encodeUs, ratio, dataset, label].
 	byAlgo := map[string][]opts.ScatterData{}
 	for _, p := range points {
 		byAlgo[p.Algorithm] = append(byAlgo[p.Algorithm], opts.ScatterData{
-			Value:      []interface{}{p.EncodeUs, p.Ratio},
+			Value:      []interface{}{p.EncodeUs, p.Ratio, p.Dataset, p.Label},
 			Symbol:     "circle",
 			SymbolSize: 8,
 		})
@@ -242,11 +255,14 @@ func dictImpactChart(pairs []DictPair) *charts.Bar {
 		}),
 		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
-		charts.WithXAxisOpts(opts.XAxis{Name: "Dataset"}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name:      "Dataset",
+			AxisLabel: &opts.AxisLabel{Interval: "0", Rotate: 30},
+		}),
 		charts.WithYAxisOpts(opts.YAxis{Name: "Ratio"}),
 		charts.WithInitializationOpts(opts.Initialization{
 			Width:  "1100px",
-			Height: "400px",
+			Height: "450px",
 		}),
 		gridWithPadding(),
 	)

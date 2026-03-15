@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/gemineo/pack2d"
 	"github.com/gemineo/pack2d/dict"
@@ -174,6 +175,11 @@ func isSkippable(err error) bool {
 		if errors.Is(err, target) {
 			return true
 		}
+	}
+	// Serialization errors (e.g. XML data through JSON serializer or vice versa)
+	// indicate an incompatible dataset/input-type combination.
+	if strings.Contains(err.Error(), "pack2d encode: serialize:") {
+		return true
 	}
 	return false
 }
