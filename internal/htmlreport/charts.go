@@ -349,7 +349,20 @@ func barcodeHeatmapChart(datasets, ecLevels []string, cells []HeatmapCell) *char
 			Subtitle: "Green = fits, Red = does not fit\nL = Low (~7% recovery) · M = Medium (~15%) · Q = Quartile (~25%) · H = High (~30%)",
 			Left:     "left",
 		}),
-		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
+		charts.WithTooltipOpts(opts.Tooltip{
+			Show: opts.Bool(true),
+			Formatter: opts.FuncOpts(`function(params) {
+				var v = params.value;
+				var fits = v[2] == 1;
+				var ver = v[3], mod = v[4], sz = v[5];
+				if (!fits) return params.name + ': does not fit';
+				var s = '<b>' + params.name + '</b><br/>Fits: ✓';
+				if (ver > 0) s += '<br/>Version: V' + ver;
+				if (mod > 0) s += '<br/>Modules: ' + mod + '×' + mod;
+				if (sz > 0) s += '<br/>Size: ' + sz.toFixed(1) + ' mm';
+				return s;
+			}`),
+		}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(false)}),
 		charts.WithXAxisOpts(opts.XAxis{
 			Type:      "category",
@@ -363,6 +376,7 @@ func barcodeHeatmapChart(datasets, ecLevels []string, cells []HeatmapCell) *char
 		}),
 		charts.WithVisualMapOpts(opts.VisualMap{
 			Calculable: opts.Bool(false),
+			Dimension:  "2",
 			Min:        0,
 			Max:        1,
 			InRange: &opts.VisualMapInRange{
@@ -392,6 +406,7 @@ func barcodeHeatmapChart(datasets, ecLevels []string, cells []HeatmapCell) *char
 		dsIdx[ds] = i
 	}
 
+	// Value dimensions: [ecIdx, dsIdx, fits, version, modules, sizeMM].
 	items := make([]opts.HeatMapData, len(cells))
 	for i, c := range cells {
 		val := 0
@@ -399,7 +414,7 @@ func barcodeHeatmapChart(datasets, ecLevels []string, cells []HeatmapCell) *char
 			val = 1
 		}
 		items[i] = opts.HeatMapData{
-			Value: [3]interface{}{ecIdx[c.ECLevel], dsIdx[c.Dataset], val},
+			Value: []interface{}{ecIdx[c.ECLevel], dsIdx[c.Dataset], val, c.Version, c.Modules, c.SizeMM},
 		}
 	}
 
@@ -417,7 +432,18 @@ func datamatrixHeatmapChart(datasets []string, cells []HeatmapCell) *charts.Heat
 			Subtitle: "Green = fits, Red = does not fit",
 			Left:     "left",
 		}),
-		charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true)}),
+		charts.WithTooltipOpts(opts.Tooltip{
+			Show: opts.Bool(true),
+			Formatter: opts.FuncOpts(`function(params) {
+				var v = params.value;
+				var fits = v[2] == 1;
+				if (!fits) return params.name + ': does not fit';
+				var s = '<b>' + params.name + '</b><br/>Fits: ✓';
+				if (v[3] > 0) s += '<br/>Modules: ' + v[3] + '×' + v[3];
+				if (v[4] > 0) s += '<br/>Size: ' + v[4].toFixed(1) + ' mm';
+				return s;
+			}`),
+		}),
 		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(false)}),
 		charts.WithXAxisOpts(opts.XAxis{
 			Type:      "category",
@@ -431,6 +457,7 @@ func datamatrixHeatmapChart(datasets []string, cells []HeatmapCell) *charts.Heat
 		}),
 		charts.WithVisualMapOpts(opts.VisualMap{
 			Calculable: opts.Bool(false),
+			Dimension:  "2",
 			Min:        0,
 			Max:        1,
 			InRange: &opts.VisualMapInRange{
@@ -455,6 +482,7 @@ func datamatrixHeatmapChart(datasets []string, cells []HeatmapCell) *charts.Heat
 		dsIdx[ds] = i
 	}
 
+	// Value dimensions: [0, dsIdx, fits, modules, sizeMM].
 	items := make([]opts.HeatMapData, len(cells))
 	for i, c := range cells {
 		val := 0
@@ -462,7 +490,7 @@ func datamatrixHeatmapChart(datasets []string, cells []HeatmapCell) *charts.Heat
 			val = 1
 		}
 		items[i] = opts.HeatMapData{
-			Value: [3]interface{}{0, dsIdx[c.Dataset], val},
+			Value: []interface{}{0, dsIdx[c.Dataset], val, c.Modules, c.SizeMM},
 		}
 	}
 
@@ -483,6 +511,61 @@ func toSet[K comparable, V any](m map[K]V) map[K]struct{} {
 
 func keys[K comparable, V any](m map[K]V) map[K]V {
 	return m
+}
+
+var ecColors = map[string]string{
+	"L": "#91cc75",
+	"M": "#5470c6",
+	"Q": "#fac858",
+	"H": "#ee6666",
+}
+
+func barcodeSizeChart(data BarcodeSizeBarData) *charts.Bar {
+	bar := charts.NewBar()
+	bar.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title:    "QR Code Physical Size by Dataset",
+			Subtitle: "Size in mm including quiet zone · lower = smaller barcode",
+		}),
+		charts.WithTooltipOpts(opts.Tooltip{
+			Show: opts.Bool(true),
+			Formatter: opts.FuncOpts(`function(params) {
+				var v = params.value;
+				if (v == 0) return params.seriesName + '<br/>' + params.name + ': does not fit';
+				return params.seriesName + '<br/>' + params.name + ': ' + v.toFixed(1) + ' mm';
+			}`),
+		}),
+		charts.WithLegendOpts(opts.Legend{Show: opts.Bool(true), Top: "30px"}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name:      "Dataset",
+			AxisLabel: &opts.AxisLabel{Interval: "0", Rotate: 30},
+		}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Name: "Size (mm)",
+		}),
+		charts.WithInitializationOpts(opts.Initialization{
+			Width:  "1100px",
+			Height: "500px",
+		}),
+		gridWithPadding(),
+	)
+	bar.SetXAxis(data.Datasets)
+
+	ecLevels := sortedKeys(toSet(keys(data.ByECLevel)))
+	for _, ec := range ecLevels {
+		sizes := data.ByECLevel[ec]
+		items := make([]opts.BarData, len(sizes))
+		for j, s := range sizes {
+			items[j] = opts.BarData{Value: fmt.Sprintf("%.1f", s)}
+		}
+		barOpts := []charts.SeriesOpts{}
+		if c, ok := ecColors[ec]; ok {
+			barOpts = append(barOpts, charts.WithItemStyleOpts(opts.ItemStyle{Color: c}))
+		}
+		bar.AddSeries("QR-"+ec, items, barOpts...)
+	}
+
+	return bar
 }
 
 func toInterfaceSlice(ss []string) []interface{} {

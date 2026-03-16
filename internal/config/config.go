@@ -36,10 +36,11 @@ type Config struct {
 	InputTypes []pack2d.InputType
 	Iterations int
 	WarmUp     int
-	DictPath string
-	Dict     *dict.Dictionary
-	Quiet    bool
-	NoColor  bool
+	DictPath     string
+	Dict         *dict.Dictionary
+	ModuleSizeMM float64
+	Quiet        bool
+	NoColor      bool
 }
 
 // DefaultConfig returns a Config with sensible defaults.
@@ -50,8 +51,9 @@ func DefaultConfig() *Config {
 		Algorithms: []pack2d.CompressionType{pack2d.Zlib, pack2d.Zstd, pack2d.Brotli},
 		Levels:     DefaultLevels,
 		InputTypes: []pack2d.InputType{pack2d.Raw, pack2d.JSON, pack2d.XML, pack2d.CBOR},
-		Iterations: 20,
-		WarmUp:     3,
+		Iterations:   20,
+		WarmUp:       3,
+		ModuleSizeMM: 0.33,
 	}
 }
 
@@ -83,6 +85,9 @@ func (c *Config) Validate() error {
 		default:
 			return fmt.Errorf("validate config: unknown input type %q", it)
 		}
+	}
+	if c.ModuleSizeMM <= 0 {
+		return fmt.Errorf("validate config: module-size must be > 0, got %f", c.ModuleSizeMM)
 	}
 	if c.Format != "ascii" {
 		return fmt.Errorf("validate config: unsupported format %q (only \"ascii\" supported)", c.Format)

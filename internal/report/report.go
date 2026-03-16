@@ -27,6 +27,7 @@ type Metadata struct {
 	Timestamp     time.Time `json:"timestamp"`
 	Iterations    int       `json:"iterations"`
 	WarmUp        int       `json:"warmUp"`
+	ModuleSizeMM  float64   `json:"moduleSizeMM,omitempty"`
 }
 
 // DatasetInfo describes a dataset used in the benchmark.
@@ -76,13 +77,14 @@ type BestEntry struct {
 func BuildReport(results []runner.Result, datasets []dataset.Dataset, toolVersion string, cfg *config.Config) *Report {
 	rpt := &Report{
 		Metadata: Metadata{
-			ToolVersion: toolVersion,
-			GoVersion:   runtime.Version(),
-			OS:          runtime.GOOS,
-			Arch:        runtime.GOARCH,
-			Timestamp:   time.Now().UTC(),
-			Iterations:  cfg.Iterations,
-			WarmUp:      cfg.WarmUp,
+			ToolVersion:  toolVersion,
+			GoVersion:    runtime.Version(),
+			OS:           runtime.GOOS,
+			Arch:         runtime.GOARCH,
+			Timestamp:    time.Now().UTC(),
+			Iterations:   cfg.Iterations,
+			WarmUp:       cfg.WarmUp,
+			ModuleSizeMM: cfg.ModuleSizeMM,
 		},
 		Datasets: make([]DatasetInfo, len(datasets)),
 		Results:  results,

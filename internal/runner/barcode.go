@@ -113,7 +113,7 @@ func (s *BarcodeScenario) Run(ctx context.Context, datasets []dataset.Dataset, c
 			continue // no valid config found
 		}
 
-		checks := makeBarcodeChecks(bestLen)
+		checks := makeBarcodeChecks(bestLen, cfg.ModuleSizeMM)
 
 		results = append(results, Result{
 			Scenario:    "barcode",

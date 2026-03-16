@@ -29,7 +29,7 @@ func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
 	fmt.Fprintf(w, "Go %s | %s/%s | %s\n",
 		rpt.Metadata.GoVersion, rpt.Metadata.OS, rpt.Metadata.Arch,
 		rpt.Metadata.Timestamp.Format("2006-01-02 15:04:05 UTC"))
-	fmt.Fprintf(w, "Iterations: %d | Warm-up: %d\n\n", rpt.Metadata.Iterations, rpt.Metadata.WarmUp)
+	fmt.Fprintf(w, "Iterations: %d | Warm-up: %d | Module size: %.2fmm\n\n", rpt.Metadata.Iterations, rpt.Metadata.WarmUp, rpt.Metadata.ModuleSizeMM)
 
 	// Group results by scenario, then by dataset.
 	byScenario := make(map[string][]runner.Result)
@@ -87,7 +87,7 @@ func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
 					for _, check := range r.Barcode.Checks {
 						if check.BarcodeType == "qrcode" && check.ECLevel == "M" {
 							if check.Fits {
-								qrStatus = passColor.Sprintf("PASS(V%d)", check.QRVersion)
+								qrStatus = passColor.Sprintf("V%d %dmm", check.QRVersion, int(check.SizeMM+0.5))
 							} else {
 								qrStatus = failColor.Sprint("FAIL")
 							}
@@ -175,6 +175,9 @@ func RenderASCII(w io.Writer, rpt *Report, noColor bool) error {
 
 		t.SetStyle(table.StyleLight)
 		t.Render()
+		if rpt.Metadata.ModuleSizeMM > 0 {
+			fmt.Fprintf(w, "  Module size: %.2fmm (--module-size to adjust)\n", rpt.Metadata.ModuleSizeMM)
+		}
 		fmt.Fprintln(w)
 	}
 
@@ -195,10 +198,14 @@ func formatCheck(checks []runner.BarcodeCheck, barcodeType, ecLevel string, pass
 	for _, c := range checks {
 		if c.BarcodeType == barcodeType && c.ECLevel == ecLevel {
 			if c.Fits {
-				if c.QRVersion > 0 {
-					return pass.Sprintf("V%d", c.QRVersion)
+				sizeSuffix := ""
+				if c.SizeMM > 0 {
+					sizeSuffix = fmt.Sprintf(" %dmm", int(c.SizeMM+0.5))
 				}
-				return pass.Sprint("PASS")
+				if c.QRVersion > 0 {
+					return pass.Sprintf("V%d%s", c.QRVersion, sizeSuffix)
+				}
+				return pass.Sprintf("PASS%s", sizeSuffix)
 			}
 			return fail.Sprint("FAIL")
 		}

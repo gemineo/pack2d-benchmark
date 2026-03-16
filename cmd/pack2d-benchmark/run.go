@@ -30,6 +30,7 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 		inputTypes string
 		warmUp     int
 		dictPath   string
+		moduleSize float64
 	)
 
 	cmd := &cobra.Command{
@@ -47,6 +48,9 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 			cfg.DictPath = dictPath
 			cfg.Iterations = iterations
 			cfg.WarmUp = warmUp
+			if moduleSize > 0 {
+				cfg.ModuleSizeMM = moduleSize
+			}
 
 			if scenarios != "" {
 				parsed, err := config.ParseScenarios(scenarios)
@@ -207,6 +211,7 @@ func newRunCmd(quiet, noColor *bool) *cobra.Command {
 	cmd.Flags().StringVar(&inputTypes, "input-types", "", "Comma-separated input types (raw,json)")
 	cmd.Flags().IntVar(&warmUp, "warm-up", 3, "Number of warm-up iterations")
 	cmd.Flags().StringVar(&dictPath, "dict", "", "Path to zstd dictionary file, or \"auto\" to train from datasets")
+	cmd.Flags().Float64Var(&moduleSize, "module-size", 0.33, "Barcode module size in mm for physical dimension calculations")
 
 	return cmd
 }

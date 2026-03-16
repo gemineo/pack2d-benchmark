@@ -44,6 +44,8 @@ type HeatmapCell struct {
 	ECLevel string
 	Fits    bool
 	Version int
+	Modules int
+	SizeMM  float64
 }
 
 // EncodedSizeBarData holds smallest encoded size per algorithm per dataset.
@@ -270,6 +272,8 @@ func BarcodeHeatmap(results []runner.Result) (datasets []string, ecLevels []stri
 	type bestVal struct {
 		fits    bool
 		version int
+		modules int
+		sizeMM  float64
 		encoded int
 	}
 
@@ -294,6 +298,8 @@ func BarcodeHeatmap(results []runner.Result) (datasets []string, ecLevels []stri
 				best[bk] = bestVal{
 					fits:    chk.Fits,
 					version: chk.QRVersion,
+					modules: chk.Modules,
+					sizeMM:  chk.SizeMM,
 					encoded: r.Encoded,
 				}
 			}
@@ -312,6 +318,8 @@ func BarcodeHeatmap(results []runner.Result) (datasets []string, ecLevels []stri
 					ECLevel: ec,
 					Fits:    v.fits,
 					Version: v.version,
+					Modules: v.modules,
+					SizeMM:  v.sizeMM,
 				})
 			}
 		}
@@ -325,6 +333,8 @@ func BarcodeHeatmap(results []runner.Result) (datasets []string, ecLevels []stri
 func DataMatrixHeatmap(results []runner.Result) (datasets []string, cells []HeatmapCell) {
 	type bestVal struct {
 		fits    bool
+		modules int
+		sizeMM  float64
 		encoded int
 	}
 
@@ -345,6 +355,8 @@ func DataMatrixHeatmap(results []runner.Result) (datasets []string, cells []Heat
 			if !ok || r.Encoded < existing.encoded {
 				best[r.Dataset] = bestVal{
 					fits:    chk.Fits,
+					modules: chk.Modules,
+					sizeMM:  chk.SizeMM,
 					encoded: r.Encoded,
 				}
 			}
@@ -359,6 +371,8 @@ func DataMatrixHeatmap(results []runner.Result) (datasets []string, cells []Heat
 				Dataset: ds,
 				ECLevel: "ECC200",
 				Fits:    v.fits,
+				Modules: v.modules,
+				SizeMM:  v.sizeMM,
 			})
 		}
 	}
@@ -410,6 +424,56 @@ func SerializationImpact(results []runner.Result) SerializationBarData {
 	}
 
 	return SerializationBarData{Datasets: datasets, ByInputType: byInputType}
+}
+
+// BarcodeSizeBarData holds barcode physical sizes per EC level per dataset.
+type BarcodeSizeBarData struct {
+	Datasets  []string
+	ByECLevel map[string][]float64 // ecLevel → sizeMM per dataset (same order as Datasets)
+}
+
+// BarcodeSizeData returns the smallest physical QR code size (in mm) per EC level per dataset.
+// Only includes entries where the data fits.
+func BarcodeSizeData(results []runner.Result) BarcodeSizeBarData {
+	type key struct {
+		dataset string
+		ecLevel string
+	}
+
+	best := map[key]float64{}
+	datasetSet := map[string]struct{}{}
+	ecSet := map[string]struct{}{}
+
+	for _, r := range results {
+		if r.Barcode == nil {
+			continue
+		}
+		for _, chk := range r.Barcode.Checks {
+			if chk.BarcodeType != "qrcode" || !chk.Fits || chk.SizeMM == 0 {
+				continue
+			}
+			k := key{r.Dataset, chk.ECLevel}
+			datasetSet[r.Dataset] = struct{}{}
+			ecSet[chk.ECLevel] = struct{}{}
+			if prev, ok := best[k]; !ok || chk.SizeMM < prev {
+				best[k] = chk.SizeMM
+			}
+		}
+	}
+
+	datasets := sortedKeys(datasetSet)
+	ecLevels := sortedECLevels(ecSet)
+
+	byEC := make(map[string][]float64, len(ecLevels))
+	for _, ec := range ecLevels {
+		sizes := make([]float64, len(datasets))
+		for i, ds := range datasets {
+			sizes[i] = best[key{ds, ec}] // 0 if not present (doesn't fit)
+		}
+		byEC[ec] = sizes
+	}
+
+	return BarcodeSizeBarData{Datasets: datasets, ByECLevel: byEC}
 }
 
 // Datasets returns the unique sorted dataset names from results.
