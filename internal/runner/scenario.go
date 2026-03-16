@@ -56,13 +56,15 @@ type BarcodeResult struct {
 
 // BarcodeCheck represents a feasibility check for a specific barcode/EC config.
 type BarcodeCheck struct {
-	BarcodeType string `json:"barcodeType"`
-	ECLevel     string `json:"ecLevel"`
-	MaxCapacity int    `json:"maxCapacity"`
-	EncodedLen  int    `json:"encodedLen"`
-	Fits        bool   `json:"fits"`
-	QRVersion   int    `json:"qrVersion,omitempty"`
+	BarcodeType string  `json:"barcodeType"`
+	ECLevel     string  `json:"ecLevel"`
+	MaxCapacity int     `json:"maxCapacity"`
+	EncodedLen  int     `json:"encodedLen"`
+	Fits        bool    `json:"fits"`
+	QRVersion   int     `json:"qrVersion,omitempty"`
 	Usage       float64 `json:"usagePercent"`
+	Modules     int     `json:"modules,omitempty"`
+	SizeMM      float64 `json:"sizeMM,omitempty"`
 }
 
 // scenarioRegistry stores registered scenarios.

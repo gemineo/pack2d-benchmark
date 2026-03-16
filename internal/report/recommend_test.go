@@ -259,7 +259,7 @@ func TestGenerateRecommendations(t *testing.T) {
 		},
 	}
 
-	recs := generateRecommendations(s)
+	recs := generateRecommendations(s, nil)
 	require.Len(t, recs, 2)
 	assert.Contains(t, recs[0], "Sweet spot")
 	assert.Contains(t, recs[1], "8 configurations fit in QR codes")
@@ -280,7 +280,7 @@ func TestGenerateRecommendations_NoSweetSpotFound(t *testing.T) {
 		},
 	}
 
-	recs := generateRecommendations(s)
+	recs := generateRecommendations(s, nil)
 	require.Len(t, recs, 1)
 	assert.Contains(t, recs[0], "Fastest (no sweet spot found)")
 }

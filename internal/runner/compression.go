@@ -100,7 +100,7 @@ func (s *CompressionScenario) Run(ctx context.Context, datasets []dataset.Datase
 
 						// Barcode feasibility checks.
 						encodedLen := len(encoded)
-						checks := makeBarcodeChecks(encodedLen)
+						checks := makeBarcodeChecks(encodedLen, cfg.ModuleSizeMM)
 
 						results = append(results, Result{
 							Scenario:    "compression",
@@ -127,7 +127,7 @@ func (s *CompressionScenario) Run(ctx context.Context, datasets []dataset.Datase
 	return results, nil
 }
 
-func makeBarcodeChecks(encodedLen int) []BarcodeCheck {
+func makeBarcodeChecks(encodedLen int, moduleMM float64) []BarcodeCheck {
 	ecLevels := []string{"L", "M", "Q", "H"}
 	var checks []BarcodeCheck
 
@@ -138,10 +138,15 @@ func makeBarcodeChecks(encodedLen int) []BarcodeCheck {
 		if maxCap > 0 {
 			usage = float64(encodedLen) / float64(maxCap) * 100
 		}
+
+		var modules int
+		var sizeMM float64
 		if fits {
 			// Compute actual capacity of the matched version.
 			versionCap := qrAlphanumericCapacity[version-1][ECLevelIndex(ec)]
 			usage = float64(encodedLen) / float64(versionCap) * 100
+			modules = QRModules(version)
+			sizeMM = QRSizeMM(version, moduleMM)
 		}
 
 		checks = append(checks, BarcodeCheck{
@@ -152,12 +157,20 @@ func makeBarcodeChecks(encodedLen int) []BarcodeCheck {
 			Fits:        fits,
 			QRVersion:   version,
 			Usage:       usage,
+			Modules:     modules,
+			SizeMM:      sizeMM,
 		})
 	}
 
 	// DataMatrix check.
 	dmFits := DataMatrixFits(encodedLen)
 	dmUsage := float64(encodedLen) / float64(dataMatrixMaxCapacity) * 100
+	var dmModules int
+	var dmSizeMM float64
+	if dmFits {
+		dmModules = DataMatrixModules(encodedLen)
+		dmSizeMM = DataMatrixSizeMM(encodedLen, moduleMM)
+	}
 	checks = append(checks, BarcodeCheck{
 		BarcodeType: "datamatrix",
 		ECLevel:     "ECC200",
@@ -165,6 +178,8 @@ func makeBarcodeChecks(encodedLen int) []BarcodeCheck {
 		EncodedLen:  encodedLen,
 		Fits:        dmFits,
 		Usage:       dmUsage,
+		Modules:     dmModules,
+		SizeMM:      dmSizeMM,
 	})
 
 	return checks

@@ -119,13 +119,32 @@ func ComputeSummary(results []runner.Result) *Summary {
 	sort.Slice(s.BestSpeed, func(i, j int) bool { return s.BestSpeed[i].Dataset < s.BestSpeed[j].Dataset })
 
 	// Generate textual recommendations.
-	s.Recommendations = generateRecommendations(s)
+	s.Recommendations = generateRecommendations(s, results)
 
 	return s
 }
 
-func generateRecommendations(s *Summary) []string {
+func generateRecommendations(s *Summary, results []runner.Result) []string {
 	var recs []string
+
+	// Build a lookup for the best QR-M barcode check per dataset.
+	type qrInfo struct {
+		version int
+		sizeMM  float64
+	}
+	bestQRM := map[string]qrInfo{}
+	for _, r := range results {
+		if r.Scenario != "compression" || r.Barcode == nil {
+			continue
+		}
+		for _, chk := range r.Barcode.Checks {
+			if chk.BarcodeType == "qrcode" && chk.ECLevel == "M" && chk.Fits {
+				if existing, ok := bestQRM[r.Dataset]; !ok || chk.SizeMM < existing.sizeMM {
+					bestQRM[r.Dataset] = qrInfo{version: chk.QRVersion, sizeMM: chk.SizeMM}
+				}
+			}
+		}
+	}
 
 	for _, ss := range s.SweetSpot {
 		label := "Sweet spot"
@@ -136,8 +155,12 @@ func generateRecommendations(s *Summary) []string {
 		if ss.UseDict {
 			dictSuffix = "+dict"
 		}
-		recs = append(recs, fmt.Sprintf("[%s] %s: %s/L%d/%s%s (ratio: %.2fx, encode: %dµs)",
-			ss.Dataset, label, ss.Algorithm, ss.Level, ss.InputType, dictSuffix, ss.Ratio, ss.EncodeUs))
+		qrSuffix := ""
+		if info, ok := bestQRM[ss.Dataset]; ok {
+			qrSuffix = fmt.Sprintf(", QR-M V%d %dmm", info.version, int(info.sizeMM+0.5))
+		}
+		recs = append(recs, fmt.Sprintf("[%s] %s: %s/L%d/%s%s (ratio: %.2fx, encode: %dµs%s)",
+			ss.Dataset, label, ss.Algorithm, ss.Level, ss.InputType, dictSuffix, ss.Ratio, ss.EncodeUs, qrSuffix))
 	}
 
 	if len(s.QRFitCounts) > 0 {

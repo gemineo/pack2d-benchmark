@@ -49,6 +49,36 @@ var qrAlphanumericCapacity = [40][4]int{
 // DataMatrix ECC 200 maximum alphanumeric capacity.
 const dataMatrixMaxCapacity = 2335
 
+// dataMatrixSymbolSizes lists the standard ECC 200 square symbol sizes (ISO 16022).
+// Each entry is {maxAlphanumericCapacity, modulesPerSide}.
+// Alphanumeric capacity = floor(dataCodwords * 3 / 2) using C40/Text encoding mode.
+var dataMatrixSymbolSizes = [][2]int{
+	{4, 10},
+	{7, 12},
+	{12, 14},
+	{18, 16},
+	{27, 18},
+	{33, 20},
+	{45, 22},
+	{54, 24},
+	{66, 26},
+	{93, 32},
+	{129, 36},
+	{171, 40},
+	{216, 44},
+	{261, 48},
+	{306, 52},
+	{420, 64},
+	{552, 72},
+	{684, 80},
+	{864, 88},
+	{1044, 96},
+	{1224, 104},
+	{1575, 120},
+	{1956, 132},
+	{2335, 144},
+}
+
 // ECLevelIndex maps an EC level string to the table column index.
 func ECLevelIndex(ec string) int {
 	switch ec {
@@ -93,6 +123,38 @@ func MaxQRECLevel(dataLen int) (ecLevel string, version int) {
 // QRMaxCapacity returns the maximum alphanumeric capacity for a given EC level (version 40).
 func QRMaxCapacity(ecLevel string) int {
 	return qrAlphanumericCapacity[39][ECLevelIndex(ecLevel)]
+}
+
+// QRModules returns the number of modules per side for a given QR version.
+func QRModules(version int) int {
+	return 21 + 4*(version-1)
+}
+
+// QRSizeMM returns the physical size in mm for a QR code including the 4-module quiet zone on each side.
+func QRSizeMM(version int, moduleMM float64) float64 {
+	return float64(QRModules(version)+8) * moduleMM
+}
+
+// DataMatrixModules returns the number of modules per side for the smallest
+// DataMatrix ECC 200 square symbol that fits dataLen bytes.
+// Returns 0 if the data does not fit any standard symbol.
+func DataMatrixModules(dataLen int) int {
+	for _, entry := range dataMatrixSymbolSizes {
+		if entry[0] >= dataLen {
+			return entry[1]
+		}
+	}
+	return 0
+}
+
+// DataMatrixSizeMM returns the physical size in mm for a DataMatrix symbol
+// including a 1-module quiet zone on each side. Returns 0 if data doesn't fit.
+func DataMatrixSizeMM(dataLen int, moduleMM float64) float64 {
+	modules := DataMatrixModules(dataLen)
+	if modules == 0 {
+		return 0
+	}
+	return float64(modules+2) * moduleMM
 }
 
 // DataMatrixFits checks if the data fits in a DataMatrix ECC 200 symbol.
